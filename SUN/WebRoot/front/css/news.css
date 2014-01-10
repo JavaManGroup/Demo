@@ -1,0 +1,48 @@
+@charset "utf-8";
+.main_1{ float:left; margin-top:6px; padding-left:8px; }
+.main_2{ margin-left:7px; margin-top:6px; float:left; }
+.banner{ width:179px; background:url(../img/news/banner.jpg) no-repeat; }
+.banner_box { width:158px; padding-left:10px; padding-top:35px; }
+.banner_button { width:146px; height:25px; margin-left:6px; background:url(../img/news/button.jpg) no-repeat right bottom; padding-top:4px; line-height: 25px; text-align: center; }
+
+.more { width:42px; height:7px; float:left; background:url(../img/more.gif) no-repeat 0px 0px; margin-top: 11px;_margin-left:16px; }
+.title_left { padding-left:5px; background:url(../img/news/title/left.jpg) no-repeat left 0px; width:754px;>width /*IE5.5*/: 759px; }
+.title_right { padding-right:5px; background:url(../img/news/title/right.jpg) no-repeat right 0px; }
+.title_middle { background:url(../img/news/title/middle.jpg) repeat-X 0 0; height:33px; padding-top: 1px; padding-bottom: 1px; }
+
+.news { width:757px; height:132px; border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; border-left: 1px solid #e0e0e0; margin-top:-2px; >height /*IE5.5*/: 135px;>width /*IE5.5*/: 759px;}
+.news_title { height:15px; width:675px; padding-left:15px; background:url(../img/num/1.gif) no-repeat 0px 0px; float:left; margin-top: 6px; margin-left: 7px;_margin-left:3px;_width:660px; >width /*IE5.5*/: 675px;}
+.news_title_2 { height:15px; width:675px; padding-left:15px; background:url(../img/num/2.gif) no-repeat 0px 0px; float:left; margin-top: 6px; margin-left: 7px;_margin-left:3px;_width:660px; >width /*IE5.5*/: 675px;}
+.news_title_3 { height:15px; width:675px; padding-left:15px; background:url(../img/num/3.gif) no-repeat 0px 0px; float:left; margin-top: 6px; margin-left: 7px;_margin-left:3px;_width:660px; >width /*IE5.5*/: 675px;}
+.news_img { width:169px; height:130px; float:left; padding-top:1px; padding-left:1px; >margin-top /*IE5.5*/: 2px; }
+.news_text{ float:left; }
+.news_text div { width:559px; height:32px; line-height: 32px; margin-left:15px; margin-right:12px; vertical-align: middle; border-bottom: 1px solid #e0e0e0; }
+.news_text div p{ width:490px; float:left; }
+.news_text div span{ float:left; }
+
+.news_2 { width:757px; border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; border-left: 1px solid #e0e0e0; margin-top:-2px;>width /*IE5.5*/: 759px;}
+.news_text_2{ width:725px; height:32px; line-height: 32px; margin-left:15px; margin-right:12px; vertical-align: middle; border-bottom: 1px solid #e0e0e0; }
+.news_text_2 p{ width:655px; float:left; }
+.news_text_2 span{ float:left; }
+
+.page { padding-top:6px; width: 214px; margin-left: 260px; }
+.page_m { width:28px; height:20px; border: 1px solid #656363; float:left; line-height: 20px; text-align: center; margin-left:2px; margin-right:2px;_width:27px; }
+
+.news_3_title { text-align: center; font: bold 20px "Trebuchet MS", Arial, Helvetica, sans-serif; border-bottom: 1px solid #999; margin-bottom: 5px; _margin-top:5px; }
+.news_3_main { text-align: center; }
+.news_3_main p { width:712px; padding-left:25px; font-size: 13px; line-height: 22px; }
+
+.border4_left { padding-left:5px; background:url(../img/border_4/left.jpg) no-repeat left 0px; width:175px; margin-top: 6px;_margin-top: 7px;_width:180px; float:left; }
+.border4_right { padding-right:5px; background:url(../img/border_4/right.jpg) no-repeat right 0px; }
+.border4_middle { background:url(../img/border_4/middle.jpg) repeat-X 0 0; height:297px; padding-top: 1px; padding-bottom: 1px; }
+
+.phone { width:162px; height:69px; background:url(../img/index/phone.jpg) no-repeat; margin-top:6px;_margin-top:-3px; }
+.phone_text { margin-left:61px; height:69px; padding-top:10px; }
+.phone p { color: #005f9d; line-height: 25px; }
+
+.text { width:209px; float:left; margin-top: 6px; padding-left:5px;_margin-top:-3px; }
+.text p { line-height: 28px; }
+
+.title_d { height:15px; width:95px; padding-left:15px; background:url(../img/num/d.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px; }
+
+.banner_qiye{ width:179px; background:url(../img/company/banner.jpg) no-repeat; }

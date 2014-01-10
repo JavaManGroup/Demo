@@ -1,0 +1,380 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sun.dao.SysNewsTypeMapper" >
+  <resultMap id="BaseResultMap" type="com.sun.vo.SysNewsType" >
+    <id column="ID" property="id" jdbcType="INTEGER" />
+    <result column="NAME" property="name" jdbcType="VARCHAR" />
+    <result column="IMAGE" property="image" jdbcType="VARCHAR" />
+    <result column="POSTTIME" property="posttime" jdbcType="TIMESTAMP" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="TIMESTAMP" />
+    <result column="USERID" property="userid" jdbcType="INTEGER" />
+    <result column="STATE" property="state" jdbcType="INTEGER" />
+    <result column="is_static" property="isStatic" jdbcType="INTEGER" />
+    <result column="is_banner" property="isBanner" jdbcType="INTEGER" />
+    <result column="SORT" property="sort" jdbcType="INTEGER" />
+    <result column="is_home" property="isHome" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="ResultMapWithBLOBs" type="com.sun.vo.SysNewsType" extends="BaseResultMap" >
+    <result column="INTRODUCTION" property="introduction" jdbcType="LONGVARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, NAME, IMAGE, POSTTIME, UPDATETIME, USERID, STATE, is_static, is_banner, SORT, 
+    is_home
+  </sql>
+  <sql id="Blob_Column_List" >
+    INTRODUCTION
+  </sql>
+  <select id="selectByExampleWithBLOBs" resultMap="ResultMapWithBLOBs" parameterType="com.sun.vo.SysNewsTypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_news_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.sun.vo.SysNewsTypeExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from sys_news_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+      <if test="limitStart > 0" >
+        limit ${limitStart} , ${limitEnd}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="ResultMapWithBLOBs" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    ,
+    <include refid="Blob_Column_List" />
+    from sys_news_type
+    where ID = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from sys_news_type
+    where ID = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.sun.vo.SysNewsTypeExample" >
+    delete from sys_news_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.sun.vo.SysNewsType" >
+    insert into sys_news_type (ID, NAME, IMAGE, 
+      POSTTIME, UPDATETIME, USERID, 
+      STATE, is_static, is_banner, 
+      SORT, is_home, INTRODUCTION
+      )
+    values (#{id,jdbcType=INTEGER}, #{name,jdbcType=VARCHAR}, #{image,jdbcType=VARCHAR}, 
+      #{posttime,jdbcType=TIMESTAMP}, #{updatetime,jdbcType=TIMESTAMP}, #{userid,jdbcType=INTEGER}, 
+      #{state,jdbcType=INTEGER}, #{isStatic,jdbcType=INTEGER}, #{isBanner,jdbcType=INTEGER}, 
+      #{sort,jdbcType=INTEGER}, #{isHome,jdbcType=INTEGER}, #{introduction,jdbcType=LONGVARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.sun.vo.SysNewsType" >
+    insert into sys_news_type
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="name != null" >
+        NAME,
+      </if>
+      <if test="image != null" >
+        IMAGE,
+      </if>
+      <if test="posttime != null" >
+        POSTTIME,
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME,
+      </if>
+      <if test="userid != null" >
+        USERID,
+      </if>
+      <if test="state != null" >
+        STATE,
+      </if>
+      <if test="isStatic != null" >
+        is_static,
+      </if>
+      <if test="isBanner != null" >
+        is_banner,
+      </if>
+      <if test="sort != null" >
+        SORT,
+      </if>
+      <if test="isHome != null" >
+        is_home,
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=INTEGER},
+      </if>
+      <if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="posttime != null" >
+        #{posttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        #{state,jdbcType=INTEGER},
+      </if>
+      <if test="isStatic != null" >
+        #{isStatic,jdbcType=INTEGER},
+      </if>
+      <if test="isBanner != null" >
+        #{isBanner,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="isHome != null" >
+        #{isHome,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null" >
+        #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.sun.vo.SysNewsTypeExample" resultType="java.lang.Integer" >
+    select count(*) from sys_news_type
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update sys_news_type
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.name != null" >
+        NAME = #{record.name,jdbcType=VARCHAR},
+      </if>
+      <if test="record.image != null" >
+        IMAGE = #{record.image,jdbcType=VARCHAR},
+      </if>
+      <if test="record.posttime != null" >
+        POSTTIME = #{record.posttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.updatetime != null" >
+        UPDATETIME = #{record.updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.userid != null" >
+        USERID = #{record.userid,jdbcType=INTEGER},
+      </if>
+      <if test="record.state != null" >
+        STATE = #{record.state,jdbcType=INTEGER},
+      </if>
+      <if test="record.isStatic != null" >
+        is_static = #{record.isStatic,jdbcType=INTEGER},
+      </if>
+      <if test="record.isBanner != null" >
+        is_banner = #{record.isBanner,jdbcType=INTEGER},
+      </if>
+      <if test="record.sort != null" >
+        SORT = #{record.sort,jdbcType=INTEGER},
+      </if>
+      <if test="record.isHome != null" >
+        is_home = #{record.isHome,jdbcType=INTEGER},
+      </if>
+      <if test="record.introduction != null" >
+        INTRODUCTION = #{record.introduction,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExampleWithBLOBs" parameterType="map" >
+    update sys_news_type
+    set ID = #{record.id,jdbcType=INTEGER},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      IMAGE = #{record.image,jdbcType=VARCHAR},
+      POSTTIME = #{record.posttime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{record.updatetime,jdbcType=TIMESTAMP},
+      USERID = #{record.userid,jdbcType=INTEGER},
+      STATE = #{record.state,jdbcType=INTEGER},
+      is_static = #{record.isStatic,jdbcType=INTEGER},
+      is_banner = #{record.isBanner,jdbcType=INTEGER},
+      SORT = #{record.sort,jdbcType=INTEGER},
+      is_home = #{record.isHome,jdbcType=INTEGER},
+      INTRODUCTION = #{record.introduction,jdbcType=LONGVARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update sys_news_type
+    set ID = #{record.id,jdbcType=INTEGER},
+      NAME = #{record.name,jdbcType=VARCHAR},
+      IMAGE = #{record.image,jdbcType=VARCHAR},
+      POSTTIME = #{record.posttime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{record.updatetime,jdbcType=TIMESTAMP},
+      USERID = #{record.userid,jdbcType=INTEGER},
+      STATE = #{record.state,jdbcType=INTEGER},
+      is_static = #{record.isStatic,jdbcType=INTEGER},
+      is_banner = #{record.isBanner,jdbcType=INTEGER},
+      SORT = #{record.sort,jdbcType=INTEGER},
+      is_home = #{record.isHome,jdbcType=INTEGER}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.sun.vo.SysNewsType" >
+    update sys_news_type
+    <set >
+      <if test="name != null" >
+        NAME = #{name,jdbcType=VARCHAR},
+      </if>
+      <if test="image != null" >
+        IMAGE = #{image,jdbcType=VARCHAR},
+      </if>
+      <if test="posttime != null" >
+        POSTTIME = #{posttime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="userid != null" >
+        USERID = #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="state != null" >
+        STATE = #{state,jdbcType=INTEGER},
+      </if>
+      <if test="isStatic != null" >
+        is_static = #{isStatic,jdbcType=INTEGER},
+      </if>
+      <if test="isBanner != null" >
+        is_banner = #{isBanner,jdbcType=INTEGER},
+      </if>
+      <if test="sort != null" >
+        SORT = #{sort,jdbcType=INTEGER},
+      </if>
+      <if test="isHome != null" >
+        is_home = #{isHome,jdbcType=INTEGER},
+      </if>
+      <if test="introduction != null" >
+        INTRODUCTION = #{introduction,jdbcType=LONGVARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKeyWithBLOBs" parameterType="com.sun.vo.SysNewsType" >
+    update sys_news_type
+    set NAME = #{name,jdbcType=VARCHAR},
+      IMAGE = #{image,jdbcType=VARCHAR},
+      POSTTIME = #{posttime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      USERID = #{userid,jdbcType=INTEGER},
+      STATE = #{state,jdbcType=INTEGER},
+      is_static = #{isStatic,jdbcType=INTEGER},
+      is_banner = #{isBanner,jdbcType=INTEGER},
+      SORT = #{sort,jdbcType=INTEGER},
+      is_home = #{isHome,jdbcType=INTEGER},
+      INTRODUCTION = #{introduction,jdbcType=LONGVARCHAR}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.sun.vo.SysNewsType" >
+    update sys_news_type
+    set NAME = #{name,jdbcType=VARCHAR},
+      IMAGE = #{image,jdbcType=VARCHAR},
+      POSTTIME = #{posttime,jdbcType=TIMESTAMP},
+      UPDATETIME = #{updatetime,jdbcType=TIMESTAMP},
+      USERID = #{userid,jdbcType=INTEGER},
+      STATE = #{state,jdbcType=INTEGER},
+      is_static = #{isStatic,jdbcType=INTEGER},
+      is_banner = #{isBanner,jdbcType=INTEGER},
+      SORT = #{sort,jdbcType=INTEGER},
+      is_home = #{isHome,jdbcType=INTEGER}
+    where ID = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

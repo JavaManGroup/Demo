@@ -1,0 +1,43 @@
+@charset "utf-8";
+.main_1 { width:486px; float:left; padding-left: 5px; }
+
+.text { width:209px; height:168px; float:left; margin-top: 6px; padding-left:5px;_margin-top:-3px; }
+.text p { line-height: 28px; }
+
+.title { height:15px; width:405px; padding-left:15px; background:url(../img/num/1.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px;_width:396px; >width /*IE5.5*/: 405;}
+
+.title_2 { height:15px; width:405px; padding-left:15px; background:url(../img/num/2.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px; _width:396px; >width /*IE5.5*/: 405; }
+.title_3 { height:15px; width:405px; padding-left:15px; background:url(../img/num/3.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px;_width:396px; >width /*IE5.5*/: 405; }
+.title_4 { height:15px; width:175px; padding-left:15px; background:url(../img/num/4.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px; }
+.title_5 { height:15px; padding-left:15px; background:url(../img/num/5.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px; width:185px;_width:170px; >width /*IE5.5*/: 180; }
+.title_d { height:15px; width:95px; padding-left:15px; background:url(../img/num/d.gif) no-repeat 0px 0px; float:left; margin-top: 9px; margin-left: 7px;_margin-left:3px; }
+.more { width:42px; height:7px; float:left; background:url(../img/more.gif) no-repeat 0px 0px; margin-top: 14px;_margin-left:16px; }
+.border1_left { padding-left:5px; background:url(../img/border_1/left.jpg) no-repeat left 0px; width:481px; margin-top: 6px;_margin-top: 7px;_width:483px; }
+.border1_right { padding-right:5px; background:url(../img/border_1/right.jpg) no-repeat right 0px; }
+.border1_middle { background:url(../img/border_1/middle.jpg) repeat-X 0 0; height:209px; padding-top: 1px; padding-bottom: 1px; }
+
+.main_2 { width:266px; float:left; margin-left: 7px;_margin-left:7px; }
+.border2_left { padding-left:5px; background:url(../img/border_2/left.jpg) no-repeat left 0px; width:261px; margin-top: 6px;_margin-top: 7px;_width:263px; }
+.border2_right { padding-right:5px; background:url(../img/border_2/right.jpg) no-repeat right 0px; }
+.border2_middle { background:url(../img/border_2/middle.jpg) repeat-X 0 0; height:367px; padding-top: 1px; padding-bottom: 1px; }
+
+.border3_left { padding-left:5px; background:url(../img/border_3/left.jpg) no-repeat left 0px; width:261px; margin-top: 6px;_margin-top: 7px;_width:263px; }
+.border3_right { padding-right:5px; background:url(../img/border_3/right.jpg) no-repeat right 0px; }
+.border3_middle { background:url(../img/border_3/middle.jpg) repeat-X 0 0; height:267px; padding-top: 1px; padding-bottom: 1px; }
+
+.main_3 { width:180px; float:left; margin-left: 7px;_margin-left:7px; }
+.border4_left { padding-left:5px; background:url(../img/border_4/left.jpg) no-repeat left 0px; width:175px; margin-top: 6px;_margin-top: 7px;_width:180px; }
+.border4_right { padding-right:5px; background:url(../img/border_4/right.jpg) no-repeat right 0px; }
+.border4_middle { background:url(../img/border_4/middle.jpg) repeat-X 0 0; height:297px; padding-top: 1px; padding-bottom: 1px; }
+
+.border5_left { padding-left:5px; background:url(../img/border_5/left.jpg) no-repeat left 0px; width:246px; margin-top: 6px;_margin-top: -3px;_width:248px; margin-left:3px;_margin-left:2px; float:left; }
+.border5_right { padding-right:5px; background:url(../img/border_5/right.jpg) no-repeat right 0px; }
+.border5_middle { background:url(../img/border_5/middle.jpg) repeat-X 0 0; height:169px; padding-top: 1px; padding-bottom: 1px; }
+
+.border6_left { padding-left:5px; background:url(../img/border_6/left.jpg) no-repeat left 0px; width:246px; margin-top: 6px;_margin-top: -3px;_width:248px; margin-left:3px;_margin-left:2px; float:left; }
+.border6_right { padding-right:5px; background:url(../img/border_6/right.jpg) no-repeat right 0px; }
+.border6_middle { background:url(../img/border_6/middle.jpg) repeat-X 0 0; height:69px; padding-top: 1px; padding-bottom: 1px; }
+
+.phone { width:162px; height:69px; background:url(../img/index/phone.jpg) no-repeat; margin-top:6px;_margin-top:-3px; }
+.phone_text { margin-left:61px; height:69px; padding-top:10px; }
+.phone p { color: #005f9d; line-height: 25px; }

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antony.service.msg.db.MessageMapper">
+
+    <update  id="updateTokenByUUID" parameterType="java.util.Map">
+        /*设置user token   c_set START*/
+        update c_set set token = #{token} where user_id = #{uuid}
+        /*设置user token   c_set END*/
+    </update>
+    
+    <select id="queryTokenByUUID" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		/*读取user token   c_set START*/
+		select TOKEN from c_set where user_id = #{uuid}
+		/*读取user token   c_set START*/
+    </select>
+    
+    
+    <update id="updateResetMsgCount" parameterType="java.util.Map">
+        update m_count set  
+        <if test="type==1">
+            F_COUNT = 0 ,
+        </if>
+        <if test="type==2">
+           	  P_COUNT = 0 ,
+        </if>
+        <if test="type==3">
+            SYS_COUNT = 0 ,
+        </if>
+       	UPDATETIME = sysdate
+       	where user_id = #{uuid}
+       	
+    </update>
+    <select  id="queryMsgCount" parameterType="java.util.Map"
+		resultType="java.util.Map">
+        /*接口IF00060   读取消息COUNT START*/
+        SELECT 
+				C.SYS_COUNT AS SYSTEM_COUNT ,
+			  	C.F_COUNT   AS FRIEND_COUNT ,
+			  	C.P_COUNT   AS PARTY_COUNT
+			FROM M_COUNT C
+			WHERE USER_ID = #{uuid}
+        /*接口IF00060   读取消息COUNT END*/
+    </select>
+    
+    
+    <select id="queryMessageByUUID" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		WITH partdata AS (SELECT cc.*,ROWNUM NNUM FROM (SELECT ROWNUM rowno,P.ID AS M_ID,
+         V.STATUS AS M_STATUS,
+         P.MSG AS M_CONTENT,
+         P.P_ID AS P_ID,
+         oracle_to_unix(P.STIME) AS m_stime,
+         P.STIME AS TIME,
+         (15-ROUND(TO_NUMBER(SYSDATE-P.STIME)* 24 * 60)) AS m_dtime,
+         S.SENDER_ID AS SENDER_ID,
+         S.USER_ID AS USER_ID
+  FROM   M_VIEW V, M_PARTY P, M_SEND S
+ WHERE       V.MSG_ID = P.ID
+         AND S.USER_ID = V.USER_ID
+         AND S.MSG_ID = P.ID
+         AND V.USER_ID = #{UID}
+         ORDER BY P.STIME DESC
+         ) cc
+         )
+  SELECT    L.*
+    FROM   partdata L
+    WHERE NNUM BETWEEN #{FROM} AND #{TO}
+    </select>
+     <select id="SelectMsgId" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		 /*接口 52 获取M_PARTY中的ID START*/
+		SELECT P.ID AS MSG_ID FROM M_PARTY P WHERE P.P_ID=#{PID}
+		 /*接口 52 获取M_PARTY中的ID END*/
+    </select>
+    <select id="SelectMsgIdToUpdate" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		 /*接口 53 获取M_PARTY中的ID START*/
+		SELECT P.ID AS MSG_ID FROM M_PARTY P WHERE P.P_ID=#{PID} AND P.TYPE='1'
+		 /*接口 53 获取M_PARTY中的ID END*/
+    </select>
+    <select id="SelectMsgIdToTrueJoinParty" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		 /*接口 54 获取M_PARTY中的ID START*/
+		SELECT  P.ID AS MSG_ID
+  FROM   M_PARTY P, M_SEND S
+ WHERE       P.ID = S.MSG_ID
+         AND P.P_ID = #{PID}
+         AND P.TYPE = '2'
+         AND P.STATUS != 'Y'
+         AND S.SENDER_ID = #{UID}
+         AND S.USER_ID != #{UID}
+		 /*接口 54 获取M_PARTY中的ID END*/
+    </select>
+     <insert id="insertIntoM_SEND" parameterType="java.util.Map">
+    /*接口 51 插入M_SEND数据 START*/
+	INSERT INTO M_SEND(ID,SENDER_ID,USER_ID,MSG_ID)
+      VALUES(SEQ_SEND_ID.NEXTVAL,#{UID},#{FID},#{MID})
+    /*接口 51 插入M_SEND数据  END*/
+    </insert>
+     <insert id="insertIntoM_SENDForUser" parameterType="java.util.Map">
+    /*接口 51 插入 派对发起人信息 M_SEND数据 START*/
+	INSERT INTO M_SEND(ID,SENDER_ID,USER_ID,MSG_ID)
+      VALUES(SEQ_SEND_ID.NEXTVAL,#{UID},#{UID},#{MID})
+    /*接口 51 插入  派对发起人信息M_SEND数据  END*/
+    </insert>
+     <insert id="insertIntoM_PARTY" parameterType="java.util.Map">
+    /*接口 51 插入M_PARTY数据 START*/
+	INSERT INTO M_PARTY(ID,TYPE,MSG,STATUS,P_ID,C_ID,STIME)
+      VALUES(#{MID},'1',#{INVITE},'N',#{PID},#{CID},SYSDATE)
+    /*接口 51 插入M_PARTY数据  END*/
+    </insert>
+    <insert id="insertIntoM_VIEW" parameterType="java.util.Map">
+    /*接口 51 插入联合创建人M_VIEW数据 START*/
+	INSERT INTO M_VIEW(ID,USER_ID,MSG_ID,STATUS,STIME)
+      VALUES(SEQ_VIEW_ID.NEXTVAL,#{FID},#{MID},'W',SYSDATE)
+    /*接口 51 插入联合创建人M_VIEW数据  END*/
+    </insert>
+    <insert id="insertIntoM_VIEWforUser" parameterType="java.util.Map">
+    /*接口 51 插入派对发起者 M_VIEW数据 START*/
+	INSERT INTO M_VIEW(ID,USER_ID,MSG_ID,STATUS,STIME)
+      VALUES(SEQ_VIEW_ID.NEXTVAL,#{UID},#{MID},'W',SYSDATE)
+    /*接口 51 插入派对发起者 M_VIEW数据  END*/
+    </insert>
+     <delete id="DeleteM_SEND" parameterType="java.util.Map">
+    /*接口 52 删除M_SEND中的数据 START*/
+	DELETE FROM M_SEND WHERE SENDER_ID=#{SID} AND USER_ID=#{UID} AND MSG_ID=#{MID}
+    /*接口 52 删除M_SEND中的数据 END*/
+    </delete>
+     <delete id="DeleteM_SENDFroMine" parameterType="java.util.Map">
+    /*接口 52 删除M_SEND中的数据 START*/
+	DELETE FROM M_SEND WHERE SENDER_ID=#{SID} AND USER_ID=#{SID} AND MSG_ID=#{MID}
+    /*接口 52 删除M_SEND中的数据 END*/
+    </delete>
+     <insert id="insertIntoM_SENDForJoinParty" parameterType="java.util.Map">
+    /*接口 52 插入联合M_SEND数据 START*/
+	INSERT INTO M_SEND(ID,SENDER_ID,USER_ID,MSG_ID)
+      VALUES(SEQ_SEND_ID.NEXTVAL,#{SID},#{UID},#{MID})
+    /*接口 52 插入联合M_SEND数据 END*/
+    </insert>
+    <insert id="insertIntoM_SENDForJoinPartyAndMine" parameterType="java.util.Map">
+    /*接口 52 插入联合M_SEND数据 START*/
+	INSERT INTO M_SEND(ID,SENDER_ID,USER_ID,MSG_ID)
+      VALUES(SEQ_SEND_ID.NEXTVAL,#{SID},#{SID},#{MID})
+    /*接口 52 插入联合M_SEND数据 END*/
+    </insert>
+     <delete id="DeleteM_VIEW" parameterType="java.util.Map">
+    /*接口 52 删除M_VIEW中的数据 START*/
+	DELETE FROM M_VIEW WHERE USER_ID=#{UID} AND MSG_ID=#{MID}
+    /*接口 52 删除M_SEND中的数据 END*/
+    </delete>
+     <delete id="DeleteM_VIEWFroMine" parameterType="java.util.Map">
+    /*接口 52 删除M_VIEW中的数据 START*/
+	DELETE FROM M_VIEW WHERE USER_ID=#{UID} AND MSG_ID=#{MID}
+    /*接口 52 删除M_SEND中的数据 END*/
+    </delete>
+     <insert id="insertIntoM_VIEWForJoinParty" parameterType="java.util.Map">
+    /*接口 52 插入联合M_VIEW中的数据 START*/
+	INSERT INTO M_VIEW(ID,USER_ID,MSG_ID,STATUS,STIME)
+      VALUES(SEQ_VIEW_ID.NEXTVAL,#{UID},#{MID},'W',SYSDATE)
+    /*接口 52 插入联合M_VIEW中的数据 END*/
+    </insert>
+     <insert id="insertIntoM_VIEWForJoinPartyAndMine" parameterType="java.util.Map">
+    /*接口 52 插入联合M_VIEW中的数据 START*/
+	INSERT INTO M_VIEW(ID,USER_ID,MSG_ID,STATUS,STIME)
+      VALUES(SEQ_VIEW_ID.NEXTVAL,#{UID},#{MID},'W',SYSDATE)
+    /*接口 52 插入联合M_VIEW中的数据 END*/
+    </insert>
+     <insert id="insertIntoM_PARTYForJoinParty" parameterType="java.util.Map">
+    /*接口 52 插入M_PARTY数据 START*/
+	INSERT INTO M_PARTY(ID,TYPE,MSG,STATUS,P_ID,C_ID,STIME)
+      VALUES(#{MID},'2',#{INVITE},'W',#{PID},0,SYSDATE)
+    /*接口 52 插入M_PARTY数据  END*/
+    </insert>
+    <update id="updateFor_M_Pary" parameterType="java.util.Map">
+    /*接口 53 更新M_PARTY中状态  START*/
+	UPDATE M_PARTY P SET P.STATUS='Y' WHERE P.P_ID=#{PID} AND P.ID=#{MID}
+	/*接口 53  插入M_PARTY数据  END*/
+	</update>
+	<update id="updateFor_M_VIEW" parameterType="java.util.Map">
+    /*接口 53 更新M_VIEW中状态  START*/
+	UPDATE M_VIEW V SET V.STATUS='Y' WHERE V.MSG_ID=#{MID} AND V.USER_ID=#{UID}
+	/*接口 53  插入M_VIEW数据  END*/
+	</update>
+	<update id="updateFor_M_VIEWForCreater" parameterType="java.util.Map">
+    /*接口 53 更新M_VIEW中状态  START*/
+	UPDATE M_VIEW V SET V.STATUS='Y' WHERE V.MSG_ID=#{MID} AND V.USER_ID=#{PUID}
+	/*接口 53  插入M_VIEW数据  END*/
+	</update>
+	<update id="updateFor_M_VIEWForTrueJoinParty" parameterType="java.util.Map">
+    /*接口 54 更新M_VIEW中状态  START*/
+	UPDATE M_VIEW V SET V.STATUS='Y' WHERE V.MSG_ID=#{MID} AND V.USER_ID=#{UID}
+	/*接口 54  插入M_VIEW数据  END*/
+	</update>
+	<update id="updateFor_M_VIEWForTrueJoinPartyForUser_Id" parameterType="java.util.Map">
+    /*接口 54 更新M_VIEW中状态  START*/
+	UPDATE M_VIEW V SET V.STATUS='Y' WHERE V.MSG_ID=#{MID} AND V.USER_ID=#{UID}
+	/*接口 54  插入M_VIEW数据  END*/
+	</update>
+</mapper>

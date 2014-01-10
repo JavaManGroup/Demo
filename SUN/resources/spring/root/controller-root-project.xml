@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminProjectController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.admin.project.ListProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/list" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.admin.project.ListProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/list" />
+					</bean>
+				</entry>
+				<entry key="images">
+					<bean class="com.sun.app.process.admin.project.ImageListProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/list_image" />
+					</bean>
+				</entry>
+				<entry key="addview">
+					<bean class="com.sun.app.process.admin.project.AddViewProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/add_view" />
+					</bean>
+				</entry>
+				<entry key="addimageview">
+					<bean class="com.sun.app.process.admin.project.AddImageViewProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/add_image" />
+					</bean>
+				</entry>
+				<entry key="adddialog">
+					<bean class="com.sun.app.process.admin.project.AddViewProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/add_dialog" />
+					</bean>
+				</entry>
+				<entry key="add">
+					<bean class="com.sun.app.process.admin.project.AddProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="editview">
+					<bean class="com.sun.app.process.admin.project.EditViewProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="admin/project/edit_view" />
+					</bean>
+				</entry>	
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.project.EditProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="delete">
+					<bean class="com.sun.app.process.admin.project.DeleteProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="deleteimages">
+					<bean class="com.sun.app.process.admin.project.DeleteImageProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>			
+				<entry key="set">
+					<bean class="com.sun.app.process.admin.project.SetProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>				
+				<entry key="setIsTop">
+					<bean class="com.sun.app.process.admin.project.SetIsTopProcess">
+						<property name="appName" value="project" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>				
+				<entry key="upload">
+					<bean class="com.sun.app.process.admin.project.UploadProcess">
+						<property name="appName" value="project" />
+						<property name="uploadPath" value="/uploads/" />
+						<property name="dirType" value="1" />
+						<property name="successView" value="admin/project/upload_view" />
+					</bean>
+				</entry>				
+			</map>
+		</property>
+	</bean>
+</beans>

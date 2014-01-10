@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="frontProjectController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.front.project.ProjectProcess">
+						<property name="successView" value="front/project" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.front.project.ProjectListProcess">
+						<property name="successView" value="front/project_list" />
+					</bean>
+				</entry>
+				<entry key="detail">
+					<bean class="com.sun.app.process.front.project.ImageProcess">
+						<property name="successView" value="front/project_image" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

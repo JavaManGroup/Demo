@@ -1,0 +1,49 @@
+@charset "utf-8";
+.main_1{ float:left; margin-top:6px; padding-left:8px; }
+.main_2{ margin-left:7px; margin-top:6px; float:left; }
+.banner{ width:179px; background:url(../img/art/banner.jpg) no-repeat; }
+.banner_box { width:158px; padding-left:10px; padding-top:35px; }
+.banner_button { width:146px; height:25px; margin-left:6px; background:url(../img/news/button.jpg) no-repeat right bottom; padding-top:4px; line-height: 25px; text-align: center; }
+
+.title_left { padding-left:5px; background:url(../img/news/title/left.jpg) no-repeat left 0px; width:754px;>width /*IE5.5*/: 759px; }
+.title_right { padding-right:5px; background:url(../img/news/title/right.jpg) no-repeat right 0px; }
+.title_middle { background:url(../img/news/title/middle.jpg) repeat-X 0 0; height:33px; padding-top: 1px; padding-bottom: 1px; }
+.news_title { height:15px; width:675px; padding-left:15px; background:url(../img/num/1.gif) no-repeat 0px 0px; float:left; margin-top: 6px; margin-left: 7px;_margin-left:3px;_width:660px; >width /*IE5.5*/: 675px;}
+.news_2 { width:752px; border-right: 1px solid #e0e0e0; border-bottom: 1px solid #e0e0e0; border-left: 1px solid #e0e0e0; margin-top:-2px;>width /*IE5.5*/: 759px;padding-left: 5px; padding-top: 5px; }
+
+.page { padding-top:6px; width: 214px; margin-left: 260px; }
+.page_m { width:28px; height:20px; border: 1px solid #656363; float:left; line-height: 20px; text-align: center; margin-left:2px; margin-right:2px;_width:27px; }
+
+.news_3_title { text-align: center; font: bold 20px "Trebuchet MS", Arial, Helvetica, sans-serif; border-bottom: 1px solid #999; margin-bottom: 5px; _margin-top:5px; }
+
+.art_left { padding-left:5px; background:url(../img/art/border/left.jpg) no-repeat left 0px; width:176px;>width /*IE5.5*/: 181px; }
+.art_right { padding-right:5px; background:url(../img/art/border/right.jpg) no-repeat right 0px; }
+.art_middle { background:url(../img/art/border/middle.jpg) repeat-X 0 0; height:123px; padding-top: 5px; padding-bottom: 1px;>height /*IE5.5*/: 128px; }
+
+.art_box { width:186px; float:left; margin: 1px;_margin-right:1px;_margin-left:0px; }
+
+.banner_rongyu{ width:179px; background:url(../img/rongyu/banner.jpg) no-repeat; }
+
+.news_3_title { text-align: center; font: bold 20px "Trebuchet MS", Arial, Helvetica, sans-serif; border-bottom: 1px solid #999; margin-bottom: 5px; _margin-top:5px; }
+.news_3_main { text-align: center; }
+.news_3_main p { width:712px; padding-left:25px; font-size: 13px; line-height: 22px; }
+
+.border1_left { padding-left:5px; background:url(../img/art/border_1/left.jpg) no-repeat left 0px; width:373px; margin-top: 0px; _margin-top: 1px; _width:373px; float:left; margin-left: 6px;_margin-left:4px;>width /*IE5.5*/: 373px; }
+.border1_right { padding-right:5px; background:url(../img/art/border_1/right.jpg) no-repeat right 0px; }
+.border1_middle { background:url(../img/art/border_1/middle.jpg) repeat-X 0 0; height:181px; padding-top: 1px; padding-bottom: 1px; }
+
+.title { height:15px; width:288px; padding-left:15px; background:url(../img/num/1.gif) no-repeat 0px 0px; float:left; margin-top: 5px; margin-left: 7px;_margin-left:3px;_width:280px; >width /*IE5.5*/: 280;}
+.title2 { height:15px; width:288px; padding-left:15px; background:url(../img/num/2.gif) no-repeat 0px 0px; float:left; margin-top: 5px; margin-left: 7px;_margin-left:3px;_width:280px; >width /*IE5.5*/: 280;}
+.title3 { height:15px; width:288px; padding-left:15px; background:url(../img/num/3.gif) no-repeat 0px 0px; float:left; margin-top: 5px; margin-left: 7px;_margin-left:3px;_width:280px; >width /*IE5.5*/: 280;}
+.title4 { height:15px; width:288px; padding-left:15px; background:url(../img/num/4.gif) no-repeat 0px 0px; float:left; margin-top: 5px; margin-left: 7px;_margin-left:3px;_width:280px; >width /*IE5.5*/: 280;}
+.title5 { height:15px; width:288px; padding-left:15px; background:url(../img/num/d.gif) no-repeat 0px 0px; float:left; margin-top: 5px; margin-left: 7px;_margin-left:3px;_width:280px; >width /*IE5.5*/: 280;}
+.more { width:42px; height:7px; float:left; background:url(../img/more.gif) no-repeat 0px 0px; margin-top: 14px;_margin-left:16px; }
+
+.border2_left { padding-left:5px; background:url(../img/art/border_2/left.jpg) no-repeat left 0px; width:208px; margin-top: 6px;_margin-top: -5px;_width:208px; margin-left:3px;_margin-left:1px; float:left; }
+.border2_right { padding-right:5px; background:url(../img/art/border_2/right.jpg) no-repeat right 0px; }
+.border2_middle { background:url(../img/art/border_2/middle.jpg) repeat-X 0 0; height:143px; padding-top: 5px; padding-bottom: 1px; }
+
+.text { width:135px; float:left; margin-top: 6px; padding-left:5px;_margin-top:-3px; }
+.text p { line-height: 25px; }
+
+.art_main{ width:770px;>width /*IE5.5*/: 770px; }

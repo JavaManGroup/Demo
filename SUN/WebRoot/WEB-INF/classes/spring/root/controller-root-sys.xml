@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminSysController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="flash">
+					<bean class="com.sun.app.process.admin.sys.EditViewProcess">
+						<property name="appName" value="sys" />
+						<property name="successView" value="admin/sys/flash_edit_view" />
+					</bean>
+				</entry>					
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.sys.EditProcess">
+						<property name="appName" value="sys" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="upload">
+					<bean class="com.sun.app.process.admin.sys.UploadProcess">
+						<property name="appName" value="sys" />
+						<property name="uploadPath" value="/flash/" />
+						<property name="dirType" value="1" />
+						<property name="successView" value="admin/sys/upload_view" />
+					</bean>
+				</entry>						
+			</map>
+		</property>
+	</bean>
+</beans>

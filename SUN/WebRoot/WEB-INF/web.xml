@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee 
+	http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<!-- Log4J配置文件路径 -->
+	<context-param>
+		<param-name>log4jConfigLocation</param-name>
+		<param-value>classpath:log4j.xml</param-value>
+	</context-param>
+
+	<!-- Spring刷新Log4J配置文件的间隔,单位为毫秒(应用环境需要去掉) -->
+	<context-param>
+		<param-name>log4jRefreshInterval</param-name>
+		<param-value>60000</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
+	</listener>
+	
+	<!-- Spring的XML配置文件的路径 -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>classpath:spring/*.xml,classpath:spring/*/*.xml</param-value>
+	</context-param>
+
+	<!-- 加载应用上下文监听器 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 清除Introspector缓冲监听器,防止内存泄漏  -->
+	<listener>
+		<listener-class>org.springframework.web.util.IntrospectorCleanupListener</listener-class>
+	</listener>
+
+	<listener>
+		<listener-class>org.springframework.web.util.WebAppRootListener</listener-class>
+	</listener>
+	<!--	设置配置webAppRootKey的值,默认是webapp.root-->
+	<context-param>
+		<param-name>webAppRootKey</param-name>
+		<param-value>webapp.sun</param-value>
+	</context-param>
+
+	<listener>
+		<listener-class>com.sun.core.bean.BeanManagerListener</listener-class>
+	</listener>
+
+	<!--spring的编码转换过滤器-->
+	<filter>
+		<filter-name>EncodingFilter</filter-name>
+		<filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+		<init-param>
+			<param-name>encoding</param-name>
+			<param-value>UTF-8</param-value>
+		</init-param>
+		<init-param>
+			<param-name>forceEncoding</param-name>
+			<param-value>true</param-value>
+		</init-param>
+	</filter>
+	<filter-mapping>
+		<filter-name>EncodingFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
+
+
+	<!--核心控制器DispatcherServlet-->
+	<servlet>
+		<servlet-name>Dispatcher</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/dispatcherServlet.xml</param-value>
+		</init-param>
+		<load-on-startup>2</load-on-startup>
+	</servlet>
+	<servlet>
+		<servlet-name>XhEditor</servlet-name>
+		<servlet-class>com.sun.core.util.UploadFileServlet</servlet-class>
+	</servlet>
+    <servlet>
+        <servlet-name>Upload</servlet-name>
+        <servlet-class>com.sun.core.util.UploadifyUploadFileServlet</servlet-class>
+    </servlet>
+
+	<servlet-mapping>
+		<servlet-name>XhEditor</servlet-name>
+		<url-pattern>/servlet/UploadFileServlet</url-pattern>
+	</servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Upload</servlet-name>
+        <url-pattern>/servlet/Upload</url-pattern>
+    </servlet-mapping>
+	<servlet-mapping>
+		<servlet-name>Dispatcher</servlet-name>
+		<url-pattern>*.do</url-pattern>
+	</servlet-mapping>
+
+	<!--验证码servlet-->
+	<!--	<servlet>-->
+	<!--		<servlet-name>checkImage</servlet-name>-->
+	<!--
+		<servlet-class>com.roiland.web.servlet.CheckImageServlet</servlet-class>
+	-->
+	<!--	</servlet>-->
+	<!--	<servlet-mapping>-->
+	<!--		<servlet-name>checkImage</servlet-name>-->
+	<!--		<url-pattern>/image.do</url-pattern>-->
+	<!--	</servlet-mapping>-->
+	<!--	<servlet-mapping>-->
+	<!--		<servlet-name>checkImage</servlet-name>-->
+	<!--		<url-pattern>/check/image.jpg</url-pattern>-->
+	<!--	</servlet-mapping>-->
+
+	<!-- CKEditor Upload File Servlet -->
+	<servlet>
+		<servlet-name>SimpleUploader</servlet-name>
+		<servlet-class>com.sun.core.util.CKEditorUploadServlet</servlet-class>
+		<init-param>
+			<param-name>baseDir</param-name>
+			<param-value>/UserUpload/</param-value>
+		</init-param>
+		<init-param>
+			<param-name>debug</param-name>
+			<param-value>false</param-value>
+		</init-param>
+		<init-param>
+			<param-name>enabled</param-name>
+			<param-value>true</param-value>
+		</init-param>
+		<init-param>
+			<param-name>AllowedExtensionsFile</param-name>
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<param-name>DeniedExtensionsFile</param-name>
+			<param-value>
+				html|htm|php|php2|php3|php4|php5|phtml|pwml|inc|asp|aspx|ascx|jsp|cfm|cfc|pl|bat|exe|com|dll|vbs|js|reg|cgi|htaccess|asis|ftl
+			</param-value>
+		</init-param>
+		<init-param>
+			<param-name>AllowedExtensionsImage</param-name>
+			<param-value>jpg|gif|jpeg|png|bmp</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DeniedExtensionsImage</param-name>
+			<param-value></param-value>
+		</init-param>
+		<init-param>
+			<param-name>AllowedExtensionsFlash</param-name>
+			<param-value>swf|fla</param-value>
+		</init-param>
+		<init-param>
+			<param-name>DeniedExtensionsFlash</param-name>
+			<param-value></param-value>
+		</init-param>
+		<load-on-startup>3</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>SimpleUploader</servlet-name>
+		<url-pattern>/ckeditor/uploader</url-pattern>
+	</servlet-mapping>
+
+	<!--错误码和对应文件-->
+	<!--	<error-page>-->
+	<!--		<error-code>500</error-code>-->
+	<!--		<location>/attachment/500.jsp</location>-->
+	<!--	</error-page>-->
+	<error-page>
+		<error-code>404</error-code>
+		<location>/attachment/404.jsp</location>
+	</error-page>
+
+	<!--Session超时时间：分钟-->
+	<session-config>
+		<session-timeout>60</session-timeout>
+	</session-config>
+
+	<!--欢迎文件-->
+	<welcome-file-list>
+		<welcome-file>login.do</welcome-file>
+		<welcome-file>index.do</welcome-file>
+		<welcome-file>index.html</welcome-file>
+	</welcome-file-list>
+
+</web-app>

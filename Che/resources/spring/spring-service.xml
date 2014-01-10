@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd"
+	default-autowire="byName" default-merge="true">
+
+	<bean id="baseService" class="org.antonyframework.service.common.CommonBaseService">
+		<property name="jdbcTemplate" ref="jdbcTemplate" />
+	</bean>
+	<!-- Service Manager -->
+	<bean id="ServiceManager" class="com.antony.service.ServiceManager">
+	</bean>
+	<bean id="userService" class="com.antony.service.user.biz.UserService"
+		parent="baseService" />
+
+	<bean id="partyService" class="com.antony.service.party.biz.PartyService"
+		parent="baseService" />
+
+	<bean id="localService" class="com.antony.service.local.biz.LocalService"
+		parent="baseService" />
+
+	<bean id="smsService" class="com.antony.service.sms.biz.SmsService"
+		parent="baseService" init-method="init" />
+	<bean id="sinaService" class="com.antony.service.sina.biz.SinaService"
+		parent="baseService" />
+	<bean id="messageService" class="com.antony.service.msg.biz.MessageService"
+		parent="baseService" init-method="init" />
+
+</beans>

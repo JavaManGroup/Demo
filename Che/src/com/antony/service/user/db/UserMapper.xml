@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antony.service.user.db.UserMapper">
+
+    <update id="updatePassForget" parameterType="java.util.Map">
+        /* 重置密码   START */
+        update c_user set pass = #{pass} where email = #{email}
+        /* 重置密码   END */
+    </update>
+	<select id="queryUserByEmail" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		/* 通过邮箱验证用户是否存在 START */
+		SELECT UUID,PASS FROM C_USER WHERE
+		EMAIL = #{email}
+		/* 通过邮箱验证用户是否存在 END */
+	</select>
+
+	<select id="queryUserByNick" parameterType="java.lang.String"
+		resultType="java.util.Map">
+		/* 通过昵称验证用户是否存在 START */
+		SELECT UUID FROM C_USER WHERE NICK = #{nick}
+		/* 通过昵称验证用户是否存在 START */
+	</select>
+
+
+	<select id="getFriendInfoByUUIDandFriendId" parameterType="java.util.Map"
+		resultType="java.util.Map">
+
+		SELECT distinct U.NICK AS USER_NICK,
+		U.PIC AS USER_PIC,
+		U.SEX AS USER_SEX,
+		U.AGE AS USER_AGE,
+		U.LOCAL AS USER_LOCAL,
+		U.DES AS
+		USER_DES,
+		U.CITY AS USER_CITY,
+		NVL(
+		(SELECT STATUS FROM C_FRIEND WHERE
+		USER_ID = #{USER_ID} AND FRIEND_ID =
+		#{FRIEND_ID})
+		,'W') AS USER_STATUS
+		FROM C_FRIEND F, C_USER U
+		WHERE U.UUID = #{FRIEND_ID}
+		AND U.UUID =
+		F.USER_ID(+)
+
+	</select>
+
+
+	<select id="getFriendListByUUID" parameterType="java.util.Map"
+		resultType="java.util.Map">
+WITH partdata AS (SELECT   ROWNUM rowno,U.NICK AS user_nick,
+        U.PIC AS user_pic,
+        U.SEX AS user_sex,
+        U.CITY AS user_city,
+        U.LOCAL AS user_local,
+        U.STATUS AS user_status,
+        U.AGE AS user_age,
+        U.DES AS user_des,
+        F.FRIEND_ID AS user_id
+        FROM C_USER U, C_FRIEND F
+        WHERE F.FRIEND_ID = U.UUID AND F.USER_ID = #{uuid} AND F.STATUS ='Y')
+ SELECT   *
+  FROM   partdata
+ WHERE   rowno BETWEEN #{FROM} AND #{TO}
+
+	</select>
+	<select id="Count_FriendListByUUID" parameterType="string"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*)
+		FROM C_USER U, C_FRIEND F
+		WHERE F.FRIEND_ID =
+		U.UUID
+	</select>
+
+	<select id="getUserInfoByUUID" parameterType="string"
+		resultType="java.util.Map">
+		SELECT U.NICK,
+		U.PIC,
+		U.SEX,
+		U.AGE,
+		U.CITY AS USER_CITY,
+		U.LOCAL AS USER_LOCAL,
+		U.DES
+		FROM
+		C_USER U
+		WHERE UUID = #{uuid}
+	</select>
+	<select id="user_friend" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT UUID FROM C_USER WHERE UUID=#{UID}
+	</select>
+	<select id="userfriend" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		INSERT INTO C_FRIEND (ID,
+		USER_ID,
+		FRIEND_ID,
+		CTIME,
+		STATUS)
+		VALUES (SEQ_FRIEND_ID.NEXTVAL,
+		#{U_ID},
+		#{F_ID},
+		SYSDATE,
+		'W')
+	</select>
+	<select id="Delete_userfriend" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		DELETE FROM C_FRIEND F WHERE F.USER_ID=#{U_ID} AND F.FRIEND_ID=#{F_ID} 
+	</select>
+	<select id="verfriend" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT F.FRIEND_ID FROM C_FRIEND F WHERE F.USER_ID=#{UID} and
+		f.friend_id =#{FID}
+	</select>
+	<update id="updateUser" parameterType="java.util.Map">
+	    
+	    	/* 修改用户信息    */
+		UPDATE C_USER SET
+		<if test="NICK">
+			NICK=#{NICK},
+		</if>
+		<if test="PIC">
+			PIC=#{PIC},
+		</if>
+		<if test="CITY">
+			CITY=#{CITY},
+		</if>
+		<if test="SEX">
+			SEX=#{SEX},
+		</if>
+		<if test="AGE">
+			AGE=#{AGE},
+		</if>
+		<if test="LOCAL">
+			LOCAL=#{LOCAL},
+		</if>
+		<if test="DES">
+			DES=#{DES}
+		</if>
+		WHERE UUID=#{UUID}
+	</update>
+	<select id="friendMessage" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		WITH partdata
+       AS (SELECT   cc.*, ROWNUM NNUM
+             FROM   (SELECT   ROWNUM rowno,
+                              M.ID AS m_id,
+                              M.STATUS AS m_status,
+                              M.SENDER_USERID AS m_sender,
+                              oracle_to_unix (M.STIME) AS m_stime,
+                              M.STIME,
+                              M.CONTENT AS m_content,
+                              M.SIGN AS SIGN
+                       FROM   C_MESSAGE M
+                      WHERE   M.USER_ID = #{UID} AND M.TYPE = #{TYPE}
+                      ORDER BY M.STIME DESC) cc)
+SELECT   *
+  FROM   partdata
+ WHERE   NNUM BETWEEN #{FROM} AND #{TO}
+	</select>
+	<select id="friendMessage_ForP_id" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		M.BINFO AS p_id
+		FROM C_MESSAGE M WHERE M.ID=#{M_ID}
+
+	</select>
+	<select id="friendMessage_ForP_Info" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT
+		P.TITLE AS p_title,
+		P.STATUS AS p_status
+		FROM C_PARTY P WHERE P.ID=#{PID}
+
+	</select>
+	<select id="Count_friendMessage" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM C_MESSAGE M WHERE M.USER_ID=#{UID} AND M.TYPE = 'friend'
+	</select>
+	<select id="sendUser" parameterType="java.util.Map" resultType="java.util.Map">
+
+		SELECT  U.UUID AS sender_id,
+        U.NICK AS sender_nick,
+        U.PIC AS sender_pic ,
+        U.SEX AS sender_sex,
+        U.AGE AS sender_age,
+        U.CITY AS sender_city,
+        U.LOCAL AS sender_local,
+        U.DES AS sender_des,
+        (SELECT F.STATUS FROM C_FRIEND F ,C_USER U WHERE F.USER_ID=U.UUID AND F.USER_ID=#{FID} AND F.FRIEND_ID=#{UID})AS sender_status
+        FROM C_USER U,C_MESSAGE M
+        WHERE M.SENDER_USERID = U.UUID
+         AND M.USER_ID=#{UID}
+        AND M.ID =#{MID}
+        ORDER BY M.STIME DESC
+
+	</select>
+	<insert id="TrueForUser" parameterType="java.util.Map" >
+	    /*成为好友  IF00013   TrueForUser好友关系 START*/
+		INSERT INTO C_FRIEND (ID,USER_ID,FRIEND_ID,CTIME,STATUS)
+		VALUES(SEQ_FRIEND_ID.NEXTVAL,
+		#{UID},#{FID},SYSDATE,'Y')
+		/*成为好友  IF00013    TrueForUser好友关系 END*/
+	</insert>
+	<delete id="Delete_ForUser" parameterType="java.util.Map">
+		/*删除好友关系START  */
+		DELETE FROM C_FRIEND F WHERE F.USER_ID=#{FID} AND F.FRIEND_ID=#{UID} 
+		/*删除好友关系END */
+	</delete>
+	<delete id="Delete_ForTrueUser" parameterType="java.util.Map">
+		/*删除好友关系START  */
+		DELETE FROM C_FRIEND F WHERE F.USER_ID=#{UID} AND F.FRIEND_ID=#{FID} 
+		/*删除好友关系END */
+	</delete>
+	<delete id="Delete_ForTrueUser_Message" parameterType="java.util.Map">
+		/*删除好友关系START  */
+		DELETE FROM C_MESSAGE M WHERE M.SENDER_USERID=#{FID} AND M.USER_ID=#{UID} 
+		/*删除好友关系END */
+	</delete>
+	<select id="Select_Sysdate" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		select to_char(M.STIME,'yyyy-MM-dd HH24:mi:ss') AS TIME FROM C_MESSAGE M WHERE M.SENDER_USERID=#{FID} AND M.USER_ID=#{UID} AND M.TYPE='friend'
+	</select>
+	<select id="Friend_addMessage" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'friend',SYSDATE,#{U_ID},#{F_ID},'N','0','0',
+      '0','friend')
+	</select>
+	<insert id="TrueForFriend" parameterType="java.util.Map">
+	    /*成为好友  IF00013   TrueForFriend好友关系 START*/
+		INSERT INTO C_FRIEND (ID,USER_ID,FRIEND_ID,CTIME,STATUS)
+		VALUES(SEQ_FRIEND_ID.NEXTVAL,
+		#{FID},#{UID},SYSDATE,'Y')
+		/*成为好友  IF00013    TrueForFriend好友关系 END*/
+	</insert>
+	<insert id="TrueForFriend_Message" parameterType="java.util.Map">
+	    /*成为好友  IF00013   TrueForFriend_Message好友关系 START*/
+		INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'friend',to_date(#{SYSDATE},'yyyy-mm-dd hh24:mi:ss'),#{F_ID},#{U_ID},'Y','0','0',
+      '0','friend')
+		/*成为好友  IF00013    TrueForFriend_Message好友关系 END*/
+	</insert>
+	<select id="User_Info" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT U.NICK AS user_nick,U.PIC AS user_pic,U.SEX AS user_sex,U.AGE
+		AS
+		user_age,U.CITY AS user_city,U.LOCAL AS user_local,U.DES AS
+		user_des,U.
+		PASS AS user_pass,U.PHONE AS user_phone
+		FROM C_USER U
+		WHERE
+		U.UUID=#{UID}
+	</select>
+
+	<select id="User_Set" parameterType="java.util.Map" resultType="java.util.Map">
+		SELECT S.S01 AS set_s01, S.S02 AS set_s02, S.S04 AS Set_s03
+		FROM C_SET
+		S
+		WHERE S.USER_ID = #{UID}
+	</select>
+	<select id="User_Set_Bound" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT S.BOUND_SINA_ID AS bound_xin,
+		S.BOUND_RENREN_ID AS
+		bound_ren,
+		S.BOUND_DOUBAN_ID AS bound_dou
+		FROM C_SET S
+		WHERE S.USER_ID =
+		#{UID}
+	</select>
+
+
+
+	<insert id="insertUserSet" parameterType="java.util.Map">
+		INSERT INTO C_SET
+		(ID,
+		<if test="suid != null">
+			BOUND_SINA_ID,
+		</if>
+		USER_ID
+		)VALUES(SEQ_SET_ID.NEXTVAL,
+		<if test="suid !=null">
+			#{suid},
+		</if>
+		#{UUID})
+	</insert>
+
+	<update id="updateUserSinaUid" parameterType="java.util.Map">
+		UPDATE C_SET T SET
+		T.BOUND_SINA_ID=#{SUID} WHERE T.USER_ID=#{UUID}
+	</update>
+
+	<select id="getUserSinaIdByUUID" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		/*通过 UUID 获得新浪的 SINA_ID =========================*/
+
+		SELECT
+		S.BOUND_SINA_ID AS SINA_ID ,U.AGE,U.LOCAL ,U.CITY ,U.SEX
+		FROM C_SET S,
+		C_USER U
+		WHERE S.USER_ID = U.UUID AND S.USER_ID = #{UUID}
+
+	</select>
+
+	<insert id="insertUser" parameterType="java.util.Map">
+		/*注册用户 START ========*/
+
+		INSERT INTO C_USER (
+		ID,
+		UUID,
+		<if test="pass != null">
+			PASS,
+		</if>
+		<if test="email != null">
+			EMAIL,
+		</if>
+		<if test="phone != null">
+			PHONE,
+		</if>
+		<if test="nick != null">
+			NICK,
+		</if>
+		<if test="local != null">
+			LOCAL,
+		</if>
+		<if test="city != null">
+			CITY,
+		</if>
+		<if test="des != null">
+			DES,
+		</if>
+		<if test="sex !=null">
+			SEX,
+		</if>
+		<if test="status != null">
+			STATUS,
+		</if>
+
+		<if test="pic != null">
+			PIC,
+		</if>
+		<if test="age !=null">
+			AGE,
+		</if>
+		<if test="sign !=null">
+			SIGN
+		</if>
+		CTIME
+		) VALUES (
+		SEQ_USER_ID.NEXTVAL,
+		#{uuid},
+		<if test="pass != null">
+			#{pass},
+		</if>
+		<if test="email != null">
+			#{email},
+		</if>
+		<if test="phone != null">
+			#{phone},
+		</if>
+		<if test="nick != null">
+			#{nick},
+		</if>
+		<if test="local != null">
+			#{local},
+		</if>
+		<if test="city != null">
+			#{city},
+		</if>
+		<if test="des != null">
+			#{des},
+		</if>
+		<if test="sex !=null">
+			#{sex},
+		</if>
+		<if test="status != null">
+			#{status},
+		</if>
+		<if test="pic != null">
+			#{pic},
+		</if>
+		<if test="age !=null">
+			#{age},
+		</if>
+		<if test="sign !=null">
+			#{sign}
+		</if>
+		SYSDATE
+
+		)
+
+		/*注册用户 EMD ========*/
+	</insert>
+	<select id="queryUserUUID" resultType="java.lang.Integer">
+		/* 获取 UUID 的 序列 START*/
+		SELECT SEQ_USER_UUID.NEXTVAL FROM DUAL
+		/* 获取 UUID 的 序列 END*/
+	</select>
+	<select id="queryUserUUIDBySinaUid" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	    /* 获取 UUID 的    BY  sina id   START*/
+		SELECT USER_ID FROM C_SET WHERE BOUND_SINA_ID = #{suid}
+	</select>
+	<update id="updateUserPass" parameterType="java.util.Map" >
+	    /* 修改用户密码   唉唉唉    START*/
+	    UPDATE C_USER SET PASS = #{PASS} WHERE UUID = #{UUID}
+	    /* 修改用户密码   唉唉唉    END*/
+	</update>
+	
+	<select id="queryUserListByCity" parameterType="java.util.Map" resultType="java.util.Map">
+	 	/*  注册时获得推荐好友  START   */   
+	    /* Formatted on 2013/2/1 0:10:39 (QP5 v5.115.810.9015) \\n */
+			SELECT   U.UUID AS USER_ID,
+			            U.NICK AS USER_NICK,
+			            U.PIC AS USER_PIC,
+			            U.SEX AS USER_SEX,
+			            U.AGE AS USER_AGE,
+			            U.CITY AS USER_CITY,
+			            U.LOCAL AS USER_LOCAL
+			  FROM   C_USER U
+			 WHERE   CITY = #{CITY}
+	    /*  注册时获得推荐好友  END   */
+	</select>
+	
+	<select id="DBTest" parameterType="java.util.Map" resultType="java.util.Map" >
+	    <![CDATA[
+	    SELECT * FROM C_PARTY WHERE ID <> 6
+		]]>
+	</select>
+	<insert id="insertUserCount" parameterType="java.util.Map">
+		INSERT INTO M_COUNT 
+		(ID,
+		USER_ID
+		)VALUES(SEQ_M_COUNT_ID.NEXTVAL,
+		#{uuid}) 
+	</insert>
+	<update id="update_M_CountForFriend" parameterType="java.util.Map">
+		UPDATE   M_COUNT
+   SET   F_COUNT = F_COUNT + 1
+ WHERE   USER_ID = #{F_ID}
+	</update>
+	
+</mapper>

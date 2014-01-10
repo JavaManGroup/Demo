@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminFileController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.admin.file.ListProcess">
+						<property name="successView" value="admin/file/list" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.admin.file.ListProcess">
+						<property name="successView" value="admin/file/list" />
+					</bean>
+				</entry>
+				<entry key="addview">
+					<bean class="com.sun.app.process.admin.file.AddViewProcess">
+						<property name="successView" value="admin/file/add_view" />
+					</bean>
+				</entry>
+				
+				<entry key="upload">
+					<bean class="com.sun.app.process.admin.file.UploadProcess">
+						<property name="successView" value="admin/file/result" />
+					</bean>
+				</entry>				
+				<entry key="uploadview">
+					<bean class="com.sun.app.process.admin.file.AddViewProcess">
+						<property name="successView" value="admin/file/upload_view" />
+					</bean>
+				</entry>
+				<entry key="adddialog">
+					<bean class="com.sun.app.process.admin.file.AddViewProcess">
+						<property name="successView" value="admin/file/add_dialog" />
+					</bean>
+				</entry>
+				<entry key="add">
+					<bean class="com.sun.app.process.admin.file.AddProcess">
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="editview">
+					<bean class="com.sun.app.process.admin.file.EditViewProcess">
+						<property name="successView" value="admin/file/edit_view" />
+					</bean>
+				</entry>
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.file.EditProcess">
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="delete">
+					<bean class="com.sun.app.process.admin.file.DeleteProcess">
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+
+	<bean id="adminUploadFileController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="upload">
+					<bean class="com.sun.app.process.admin.file.UploadProcess">
+						<property name="successView" value="admin/file/result" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

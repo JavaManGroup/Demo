@@ -1,0 +1,895 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antony.service.party.db.PartyMapper" >
+	<select id="getPartyTakeInfoByUUIDAndPartyId"  parameterType="java.util.Map"
+		resultType="java.util.Map">
+	     SELECT   T.STATUS AS STATUS
+  FROM   C_PARTY P, C_TAKE T
+ WHERE   P.ID = T.P_ID AND T.P_ID = #{PID} AND T.USER_ID = #{UID} AND ROWNUM = 1
+	</select>
+	
+    <select id="getPartyInfoByPid" parameterType="java.util.Map"
+		resultType="java.util.Map">
+/* Formatted on 2013/1/29 10:43:22 (QP5 v5.115.810.9015) */
+		SELECT   P.ID,
+         C.TITLE AS C_TITLE,
+         P.TITLE AS P_TITLE,
+         P.LOCAL AS P_LOCAL,
+         P.ID AS P_ID,
+         oracle_to_unix(P.STIME) AS P_TIME,
+         P.INFO AS P_INFO,
+         CM.VALUE AS P_LABLE,
+         P.TYPE AS P_TYPE,
+         (SELECT T.STATUS  FROM C_TAKE T WHERE T.USER_ID = #{UUID} AND T.P_ID = #{PID} AND  ROWNUM = 1) AS P_STATUS,
+         P.C_ID AS C_ID,
+         P.L_ID AS L_ID,
+         L.LAT AS LAT,
+         L.LNG AS LNG
+    FROM   C_PARTY P,CM_PROPERTY CM,C_COLLECTION C ,C_LOCAL L
+  WHERE   P.ID = #{PID}
+        AND P.C_ID = C.ID(+) 
+        AND P.L_ID = L.ID(+)
+        AND C.TYPE = CM.NAME
+        <if test="CID">
+        AND P.C_ID=#{CID}
+        </if>
+    </select>
+    
+	<select id="getPartys" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT   P.TITLE AS P_TITLE,
+         P.LOCAL AS P_LOCAL,
+         P.ID AS P_ID,
+         P.TYPE AS P_TYPE,
+         C.VALUE AS P_LABEL,
+         P.CTIME AS P_CTIME,
+         P.INFO AS P_INFO,
+         nvl(L.LNG,0) AS LNG,
+         nvl(L.LAT,0) AS LAT,
+         P.STATUS AS P_STATUS,
+         P.C_ID AS C_ID,
+         CC.TITLE AS C_TITLE,
+         (SELECT   COUNT ( * )
+            FROM   C_TAKE T1, C_PARTY P1, C_USER U1
+           WHERE       P1.ID = T1.P_ID
+                   AND T1.USER_ID = U1.UUID
+                   AND P1.ID = P.ID
+                   AND (T1.TYPE = '1' OR T1.TYPE = '2'))
+            AS CREATER_NUM,
+         (SELECT   COUNT ( * )
+            FROM   C_TAKE T1, C_PARTY P1, C_USER U1
+           WHERE       P1.ID = T1.P_ID
+                   AND T1.USER_ID = U1.UUID
+                   AND P1.ID = P.ID
+                   AND (T1.TYPE = '3'))
+            AS PART_NUM
+  FROM   C_PARTY P,
+         C_USER U,
+         C_TAKE T,
+         CM_PROPERTY C,
+         C_LOCAL L,
+         C_COLLECTION CC
+ WHERE       P.ID = T.P_ID
+         AND P.L_ID = L.ID(+)
+         AND T.USER_ID = U.UUID
+         AND T.TYPE = '1'
+         AND P.TYPE = '1'
+         AND C.PROPERTY = 'TYPE'
+         AND C.NAME = P.TYPE
+         AND P.C_ID = CC.ID(+) 
+         <if test="C_ID">
+             AND P.C_ID = #{C_ID}
+         </if>
+	</select>
+	
+	<select id="getCreaters" parameterType="java.util.Map" resultType="java.util.Map">
+	            SELECT 
+                U.UUID AS USER_ID , 
+                U.NICK AS USER_NICK ,
+                U.PIC AS USER_PIC 
+          FROM   C_USER U, C_PARTY P, C_TAKE T
+         WHERE   T.P_ID = #{ID}  AND P.ID = T.P_ID AND T.USER_ID = U.UUID
+         AND (T.TYPE = '1' OR T.TYPE = '2' ) AND T.STATUS = 'Y'
+	</select>
+	<select id="getParticipants" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT   U.UUID AS USER_ID, U.NICK AS USER_NICK, U.PIC AS U_PIC
+  FROM   C_USER U, C_PARTY P, C_TAKE T
+ WHERE       T.P_ID = #{PID}
+         AND P.ID = T.P_ID
+         AND T.USER_ID = U.UUID
+         AND (T.TYPE = '3' AND T.STATUS = 'Y') 
+	</select>
+	<select id="getPartyForPoartyTitle" parameterType="java.util.Map" resultType="java.util.Map">
+      SELECT  P.TITLE AS P_TITLE FROM C_PARTY P
+     WHERE   P.ID = #{PID}	    
+	</select>
+	<select id="count"  resultType="java.lang.Integer">
+	    select count(*) as id from C_USER 
+	</select>
+<select id="getCount"  resultType="java.lang.Integer">
+	SELECT   COUNT ( * ) 
+           FROM   C_PARTY P, C_TAKE T, C_USER U
+         WHERE       P.ID = T.P_ID
+         AND T.USER_ID = U.UUID
+         AND T.TYPE = '1'
+	</select>
+	<select id="Partys_local" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	    
+	    WITH partdata AS
+  (SELECT rownum rowno,
+    P.TITLE                 AS P_TITLE,
+    P.LOCAL                 AS P_LOCAL,
+    P.ID                    AS P_ID,
+    P.TYPE                  AS P_TYPE,
+    oracle_to_unix(P.STIME) AS p_stime,
+    P.USER_ID               AS USER_ID,
+    L.LAT,
+    L.LNG,
+    GetDistance(#{LAT},#{LNG},L.LAT,L.LNG) AS DIS,
+    P.CTIME                      AS P_CTIME
+  FROM C_PARTY P,
+    C_LOCAL L
+  WHERE P.STATUS != 'N'
+  AND P.L_ID      = L.ID(+)
+  ORDER BY DIS asc
+  )
+select * from partdata where rowno between #{FROM} and #{TO}    
+	    
+	</select>	
+
+	<select id="Partys" parameterType="java.util.Map"
+		resultType="java.util.Map">
+with partdata as (select rownum rowno, P.TITLE AS P_TITLE,
+                     P.LOCAL AS P_LOCAL,
+                     P.ID AS P_ID,
+                     P.TYPE AS P_TYPE,
+                     oracle_to_unix(P.STIME) AS p_stime,
+                     P.USER_ID AS USER_ID,
+                     L.LAT,
+                     L.LNG,
+                       <if test="LAT">
+                         GetDistance(#{LAT},#{LNG},L.LAT,L.LNG) AS DIS,
+                     </if>
+                     P.CTIME AS P_CTIME
+                      from   C_PARTY P, C_LOCAL L where P.STATUS != 'N'
+                      AND P.L_ID = L.ID(+)
+                        <choose>
+                        <when test="LAT">
+                            ORDER BY DIS
+                        </when>
+                        <otherwise>
+                            ORDER BY   P.CTIME DESC
+                        </otherwise>
+                    </choose>
+                      )
+select * from partdata where rowno between #{FROM} and #{TO}
+ORDER BY ROWNO
+	</select>
+	<select id="Select_P_LABEL" parameterType="java.util.Map"
+		resultType="java.util.Map">
+ 	SELECT
+         C.VALUE AS P_LABLE
+  FROM   C_PARTY P,
+         CM_PROPERTY C,
+         C_COLLECTION CC
+ WHERE      
+          P.C_ID=CC.ID
+         AND C.PROPERTY = 'TYPE'
+         AND C.NAME = CC.TYPE
+         AND P.ID=#{PID}
+	</select>
+	<select id="getUser" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	     SELECT   U.NICK AS user_nick, U.SEX AS user_sex, U.PIC AS user_pic
+          FROM   C_TAKE T, C_USER U,C_PARTY P
+        WHERE   T.USER_ID = U.UUID  AND P.ID = T.P_ID AND U.UUID = #{U_ID} AND T.P_ID = #{P_ID} AND T.TYPE=1
+	</select>
+	<select id="count_getUser" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+	     SELECT  COUNT(*)
+          FROM   C_TAKE T, C_USER U,C_PARTY P
+        WHERE   T.USER_ID = U.UUID  AND P.ID = T.P_ID AND U.UUID = #{U_ID} AND T.P_ID = #{P_ID}
+	</select>
+	<select id="buUser" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	SELECT U.NICK AS user_nick,U.PIC AS user_pic FROM C_TAKE T,C_USER U,C_PARTY P
+      WHERE P.ID = T.P_ID
+      AND T.USER_ID = U.UUID
+      AND T.P_ID = #{P_ID}
+      AND ( T.TYPE = 2)
+      AND T.STATUS  = 'Y'
+	</select>
+	<select id="getActivity" parameterType="java.util.Map"
+		resultType="java.util.Map">	
+		/*接口4 获取 详细的集合信息  START*/
+        SELECT   C.TITLE AS c_title,
+         C.PIC AS c_pic,
+         C.HOST AS c_host,
+         C.LOCAL AS c_local,
+         C.INFO AS c_info,
+         P.VALUE AS c_label,
+         (SELECT NVL(J.STATUS,'N') FROM C_JOIN J WHERE J.USER_ID=#{UID} AND J.C_ID=#{C_ID}) AS c_status,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION Z, C_PARTY Y
+           WHERE   Z.ID = Y.C_ID AND Y.C_ID=#{C_ID})
+            AS c_pnum,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION G, C_JOIN K, C_USER A
+           WHERE   G.ID = K.C_ID AND K.USER_ID = A.UUID AND K.C_ID=#{C_ID})
+            AS c_fnum
+  FROM   C_COLLECTION C, CM_PROPERTY P
+ WHERE   P.PROPERTY = 'TYPE' AND P.NAME = C.TYPE(+) AND C.ID = #{C_ID}
+ /*接口4 获取 详细的集合信息  END*/
+	</select>
+	<select id="getFpic"  parameterType="java.util.Map"
+		resultType="java.util.Map">
+	SELECT   U.PIC AS c_fpic
+  FROM   C_COLLECTION C,
+         C_JOIN J,
+         C_USER U,
+         CM_PROPERTY P
+ WHERE       C.ID = J.C_ID
+ 		 AND C.ID=#{CID}
+         AND J.USER_ID = U.UUID
+         AND P.PROPERTY = 'TYPE'
+         AND P.NAME = C.TYPE
+         AND ROWNUM BETWEEN 0 AND 7 
+	</select>
+	<select id="getHotActivity" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	SELECT   C.TITLE AS c_title,
+         C.PIC AS c_pic,
+         C.LOCAL AS c_local,
+         C.INFO AS c_info,
+         P.VALUE AS c_label,
+         (SELECT J.STATUS FROM C_JOIN J WHERE J.USER_ID=#{UID} AND J.C_ID=#{CO_ID})AS c_status,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION CC, C_PARTY Y
+           WHERE   CC.ID = Y.C_ID AND  CC.ID = #{CO_ID} AND Y.STATUS='Y')
+            AS c_pnum,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION CC, C_JOIN J, C_USER U
+           WHERE   C.ID = J.C_ID AND J.USER_ID = U.UUID and CC.ID = #{CO_ID})
+            AS c_fnum
+  FROM   C_COLLECTION C,
+   		 CM_PROPERTY P
+ WHERE    C.ID=#{CO_ID}
+ 		 AND P.PROPERTY = 'TYPE'
+         AND P.NAME = C.TYPE
+	</select>
+	<select id="getUser_num" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	SELECT   COUNT ( * ) AS user_num
+  FROM   C_USER U, C_FRIEND F
+ WHERE   U.UUID = F.USER_ID
+	</select>
+	<select id="user_Num_Friend" parameterType="java.util.Map"
+		 resultType="java.lang.Integer">
+	SELECT   COUNT (*) AS USER_STATUS
+  FROM   C_USER U, C_JOIN J, C_COLLECTION C
+ WHERE   J.USER_ID = U.UUID AND C.ID = J.C_ID AND J.C_ID = #{CID}
+        </select>
+	<select id="user_Info" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		<![CDATA[
+     WITH partdata
+       AS (SELECT   ROWNUM rowno,
+                    U.NICK AS user_nick,
+                    U.PIC AS user_pic,
+                    U.SEX AS user_sex,
+                    U.CITY AS user_city,
+                    U.LOCAL AS user_local,
+                    U.AGE AS user_age,
+                    U.DES AS user_des,
+                    J.USER_ID AS user_id,
+                    (SELECT   F1.STATUS status
+                       FROM   C_USER U1, C_FRIEND F1
+                      WHERE       U1.UUID = F1.USER_ID
+                              AND F1.USER_ID = #{UID}
+                              AND F1.FRIEND_ID = U.UUID)
+                       AS USER_STATUS
+             FROM   C_USER U, C_JOIN J, C_COLLECTION C
+            WHERE   J.USER_ID = U.UUID AND C.ID = J.C_ID AND J.C_ID = #{C_ID})
+SELECT   *
+  FROM   partdata
+ WHERE   rowno BETWEEN #{FROM} AND #{TO} 
+ ORDER BY ROWNUM
+         ]]>
+	</select>
+	<select id="userFriendStatus" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT  F.STATUS user_status
+  		FROM   C_USER U, C_FRIEND F
+		WHERE   U.UUID = F.USER_ID AND F.USER_ID =#{UID} AND F.FRIEND_ID =#{FID}
+	</select>
+	<select id="userInfo_toPartyTitle" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		SELECT P.TITLE AS p_title,P.LOCAL AS p_local FROM C_PARTY P WHERE P.ID=#{PID}
+	</select>
+	<select id="user_friend" parameterType="java.util.Map"
+		resultType="java.util.Map">
+	SELECT UUID FROM C_USER WHERE UUID=#{UID}
+	</select>
+	<select id="selectNextSeq" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	SELECT SEQ_PARTY_ID.NEXTVAL AS SPI,SEQ_LOCAL_ID.NEXTVAL AS SLI,SEQ_MSG_ID.NEXTVAL AS SMI FROM DUAL
+	</select>
+	<select id="insertParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	INSERT INTO C_PARTY(ID,TITLE,LOCAL,STIME,TYPE,USER_ID,INFO,CTIME,STATUS,C_ID,L_ID,CITY)
+      VALUES(#{ID},#{TITLE},#{LOCAL}, to_date(#{STIME},'yyyy-mm-dd hh24:mi:ss'),#{TYPE},#{USER_ID},
+      #{INFO},SYSDATE,'N',#{C_ID},#{L_ID},#{CITY})
+	</select>
+	<update id="UpdatePhone" parameterType="java.util.Map">
+	UPDATE C_USER SET PHONE=#{PHONE} WHERE UUID=#{UID}
+	</update>
+	<select id="insertTake" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	INSERT INTO C_TAKE(ID,P_ID,USER_ID,UPDATETIME,STATUS,TYPE) VALUES(SEQ_TAKE_ID.NEXTVAL,#{p_id},#{user_id},
+      SYSDATE,'N','2')
+	</select>
+	<select id="insertTake_ToUser" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	INSERT INTO C_TAKE(ID,P_ID,USER_ID,UPDATETIME,STATUS,TYPE) VALUES(SEQ_TAKE_ID.NEXTVAL,#{p_id},#{user_id},
+      SYSDATE,'Y','1')
+	</select>
+	<select id="insertLocal" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 /*插入地点经纬度 START*/
+	INSERT INTO C_LOCAL(ID,LNG,LAT) VALUES(#{ID},#{LNG},#{LAT})
+	 /*插入地点经纬度  END*/
+	</select>
+	<select id="Message_ForTureParty_Pass" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		  INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,
+      AINFO,
+      BINFO,
+      SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'system',SYSDATE,#{PUID},#{UID},'W','0','0',
+      '0','0',#{PID},'pass')
+	</select>
+	<select id="Message_ForTurePartyCreater_Pass" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		  INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,
+      AINFO,
+      BINFO,
+      SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'system',SYSDATE,#{PUID},#{UID},'W','0','0',
+      '0','0',#{PID},'pass')
+	</select>
+	<select id="Message_ForDeleteParty_Pass" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 DELETE FROM C_MESSAGE WHERE SENDER_USERID=#{PUID} AND USER_ID=#{UID} AND BINFO=#{PID} AND SIGN='pass'
+	</select>
+	<select id="Message_ForDeletePartyCreats_Pass" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 DELETE FROM C_MESSAGE WHERE SENDER_USERID=#{PUID} AND USER_ID=#{UID} AND BINFO=#{PID} AND SIGN='pass'
+	</select>
+	<update id="updateRelationForParty" parameterType="java.util.Map">
+	UPDATE C_TAKE T SET T.STATUS='Y' WHERE T.USER_ID=#{UID} AND T.P_ID=#{PID}
+	</update>
+	<update id="updateRelationForCreats" parameterType="java.util.Map">
+	UPDATE C_TAKE T SET T.STATUS='Y' WHERE T.USER_ID=#{UID} AND T.P_ID=#{PID}
+	</update>
+	<update id="updateFor_Pary" parameterType="java.util.Map">
+	UPDATE C_PARTY P SET P.STATUS='Y' WHERE P.ID=#{PID}
+	</update>
+	<update id="updateFor_Message_Creater" parameterType="java.util.Map">
+	UPDATE C_MESSAGE M SET M.STATUS='Y' WHERE M.BINFO=#{PID} AND M.SENDER_USERID=#{PUID} AND M.USER_ID=#{UID}
+	</update>
+	<select id="deleteRelation" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	DELETE FROM C_FRIEND F WHERE F.USER_ID=#{UID} AND F.FRIEND_ID=#{FID}
+	</select>
+	<select id="deleteRelationForFriend" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	DELETE FROM C_FRIEND F WHERE F.USER_ID=#{UID} AND F.FRIEND_ID=#{FID}
+	</select>
+	<select id="joinActivityToDelete" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	DELETE FROM C_JOIN J WHERE J.C_ID=#{C_ID} AND J.USER_ID=#{U_ID}
+	</select>
+	<select id="joinActivity" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+ 	INSERT INTO C_JOIN (ID,C_ID,USER_ID,STATUS,UPDATETIME,SORT)VALUES(
+      SEQ_JOIN_ID.NEXTVAL,#{C_ID},#{U_ID},'Y',SYSDATE,SEQ_JOIN_ID.CURRVAL)
+	</select>
+	<select id="deleteActivity" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 /*接口27 用户退出一个集合 START*/
+	DELETE FROM C_JOIN J WHERE J.C_ID=#{C_ID} AND J.USER_ID=#{U_ID}
+	 /*接口27 用户退出一个集合 END*/
+	</select>
+	<select id="Activity" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	 WITH partdata
+       AS (SELECT   ROWNUM rowno,
+                   C.TITLE AS c_title,
+         C.ID AS c_id,
+         Y.VALUE AS c_label,
+         C.LOCAL AS c_local,
+         C.STIME AS c_stime,
+         C.PIC AS c_pic,
+         C.STATUS AS c_status,
+         C.HOST AS c_host,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION CC, C_PARTY PP
+           WHERE   CC.ID = PP.C_ID AND C.ID = PP.C_ID)
+            AS c_pnum,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION CC, C_JOIN JJ
+           WHERE   CC.ID = JJ.C_ID AND C.ID = JJ.C_ID
+                
+           )
+            AS c_fnum
+             FROM   C_COLLECTION C, CM_PROPERTY Y
+         WHERE   Y.PROPERTY = 'TYPE' AND Y.NAME = C.TYPE AND C.TYPE='1')
+SELECT   *
+  FROM   partdata
+ WHERE   rowno BETWEEN #{FROM} AND #{TO} 
+ ORDER BY ROWNUM
+ 
+	</select>
+	<select id="countActivityForActivity" parameterType="java.util.Map"
+		 resultType="java.lang.Integer">
+	SELECT COUNT(*) as index_num FROM  C_COLLECTION C WHERE C.TYPE='1'
+	</select>
+	<select id="ActivityForLocal" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 WITH partdata
+       AS (SELECT   ROWNUM rowno,
+                   C.TITLE AS c_title,
+         C.ID AS c_id,
+         Y.VALUE AS c_label,
+         C.LOCAL AS c_local,
+         C.STIME AS c_stime,
+         C.PIC AS c_pic,
+         C.STATUS AS c_status,
+         C.HOST AS c_host,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION CC, C_PARTY PP
+           WHERE   CC.ID = PP.C_ID AND C.ID = PP.C_ID)
+            AS c_pnum,
+         (SELECT   COUNT ( * )
+            FROM   C_COLLECTION CC, C_JOIN JJ
+           WHERE   CC.ID = JJ.C_ID AND C.ID = JJ.C_ID
+                
+           )
+            AS c_fnum
+             FROM   C_COLLECTION C, CM_PROPERTY Y
+         WHERE   Y.PROPERTY = 'TYPE' AND Y.NAME = C.TYPE AND C.TYPE='2')
+SELECT   *
+  FROM   partdata
+ WHERE   rowno BETWEEN #{FROM} AND #{TO} 
+ ORDER BY ROWNUM
+	</select>
+	<select id="countActivityForLocal" parameterType="java.util.Map"
+		 resultType="java.lang.Integer">
+	SELECT COUNT(*) as index_num FROM C_COLLECTION C WHERE C.TYPE='2'
+	</select>
+	<select id="systemMessage" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	    WITH partdata AS (SELECT cc.*,ROWNUM NNUM FROM (SELECT   ROWNUM rowno, M.ID AS
+      m_id,oracle_to_unix(M.STIME)AS m_stime,M.CONTENT AS m_content,M.AINFO AS
+      c_id,M.STIME,
+      M.SIGN AS SIGN,
+      M.SENDER_USERID AS SENDER_ID,
+      M.LOCAL AS m_invite
+      FROM C_MESSAGE M
+      WHERE M.TYPE=#{TYPE}
+      AND M.USER_ID=#{UID} ORDER BY M_STIME DESC) cc)
+      SELECT   *
+        FROM   partdata
+        WHERE NNUM BETWEEN #{FROM} AND #{TO}
+	</select>
+	<select id="systemMessage_CTITLE" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	  SELECT C.TITLE AS c_title,C.TYPE AS c_type FROM C_COLLECTION C WHERE C.ID=#{CID}
+	</select>
+	<select id="Select_C_Join" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	  SELECT J.USER_ID AS USERID FROM C_JOIN J WHERE J.C_ID=#{CID} AND J.USER_ID!=#{UID}
+	</select>
+	<select id="Select_C_Take" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	   SELECT T.USER_ID AS USERID FROM C_TAKE T WHERE T.P_ID=#{PID} AND T.USER_ID!=#{UID}
+	</select>
+	<select id="Select_C_Take_Pass" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	   SELECT J.USER_ID AS USERID FROM C_JOIN J WHERE J.C_ID=#{CID} AND J.USER_ID!=#{UID}
+	</select>
+	<select id="Insert_M_Message" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 /*联合创建人 推送信息 START*/
+	  INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,
+      AINFO,
+      BINFO,
+      SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'system',SYSDATE,#{UID},#{FID},'W','0','0',
+      '0',#{CID},#{PID},'invite')
+      /*联合创建人 推送信息 END*/
+	</select>
+	<select id="Insert_M_Message_C" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 /*联合创建人 推送信息 START*/
+	  INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,
+      AINFO,
+      BINFO,
+      SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'system',SYSDATE,#{UID},#{FID},'W','0','0',
+      '0',#{CID},#{PID},'invite')
+      /*联合创建人 推送信息 END*/
+	</select>
+	<select id="Insert_M_Message_Party" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 /*联合创建人 推送信息 START*/
+	  INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,AINFO,BINFO)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'party',SYSDATE,#{UID},#{FID},'W','0','0',
+      '0',#{CID},#{PID})
+      /*联合创建人 推送信息 END*/
+	</select>
+	<select id="Insert_M_Message_Party_C" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 /*联合创建人 推送信息 START*/
+	  INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,AINFO,BINFO)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'party',SYSDATE,#{FID},#{UID},'W','0','0',
+      '0',#{CID},#{PID})
+      /*联合创建人 推送信息 END*/
+	</select>
+	<select id="DeleteParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	 DELETE FROM C_TAKE T WHERE T.P_ID=#{PID} AND T.USER_ID=#{UID}
+	</select>
+	<select id="ExitParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	 DELETE FROM C_TAKE T WHERE T.P_ID=#{PID} AND T.USER_ID=#{UID}
+	</select>
+	<select id="JoinToParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	  INSERT INTO C_TAKE (ID,
+                    P_ID,
+                    USER_ID,
+                    UPDATETIME,
+                    STATUS,
+                    TYPE)
+  VALUES   (SEQ_TAKE_ID.NEXTVAL,
+            #{PID},
+            #{UID},
+            SYSDATE,
+            'W',
+            3)
+	</select>
+	<select id="userInfo" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT P.INFO AS m_msg,P.ID AS p_id FROM C_PARTY P WHERE P.USER_ID = #{UID} AND P.ID=#{PID}
+	</select>
+	<select id="userInfo_tophone" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT U.PHONE AS PHONE FROM C_USER U WHERE U.UUID=#{SID}
+	</select>
+	<select id="messageInfo" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT M.BINFO AS p_id FROM C_MESSAGE M WHERE M.USER_ID=#{UID} AND M.TYPE=#{TYPE}
+	</select>
+	<select id="messagetoinfo" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT M.BINFO AS p_id FROM C_MESSAGE M WHERE M.ID=#{MID}
+	</select>
+	<select id="Message_party_UserInfo" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 SELECT   U.ID AS user_id, U.NICK AS user_nick, U.PIC AS user_pic
+ 		 FROM   C_USER U
+ 		WHERE   U.UUID = #{UID}
+	</select>
+	<select id="Creaters_ForId" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT   T.USER_ID AS creat_id
+ 		FROM   C_TAKE T
+		WHERE   T.TYPE = '2' AND T.P_ID = #{PID}
+	</select>
+	<select id="Message_part_info" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	    SELECT P.ID AS p_id,P.TYPE AS p_type,P.TITLE AS p_title,oracle_to_unix(P.CTIME)AS p_ctime,
+		P.LOCAL AS p_local,oracle_to_unix(P.STIME) AS p_stime,P.USER_ID AS p_uuid,
+		P.CITY AS p_city FROM C_PARTY P WHERE P.ID=#{PID}
+	</select>
+	<select id="PartyMessage" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+          /* IF00017 读取派对消息  给     接收者  START*/
+		 SELECT   M.ID AS m_id,
+         M.STATUS AS m_status,
+         oracle_to_unix(M.STIME) AS m_stime,
+           (15-ROUND(TO_NUMBER(SYSDATE-M.STIME)* 24 * 60)) AS m_dtime,
+         M.MSG AS m_msg,
+         M.SENDER_USERID AS SENDER_USERID,
+         M.USER_ID AS USER_ID,
+         M.BINFO AS BINFO
+         FROM   C_MESSAGE M WHERE M.USER_ID=#{UID}      
+          AND M.TYPE=#{TYPE}
+         AND ROWNUM BETWEEN #{FROM}/2 AND #{TO}/2
+         ORDER BY M.STIME ASC  
+         /* IF00017 读取派对消息  给     接收者  START*/
+
+	</select>
+	<select id="PartyMessageToSender" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+
+          /* IF00017 读取派对消息  给     接收者  START*/
+		 SELECT   M.ID AS m_id,
+         M.STATUS AS m_status,
+         oracle_to_unix(M.STIME) AS m_stime,
+        (15-ROUND(TO_NUMBER(SYSDATE-M.STIME)* 24 * 60)) AS m_dtime,
+         M.MSG AS m_msg,
+         M.SENDER_USERID AS SENDER_USERID,
+         M.USER_ID AS USER_ID,
+         M.BINFO AS BINFO,
+         M.SIGN AS SIGN
+         FROM   C_MESSAGE M WHERE M.SENDER_USERID=#{UID}      
+         AND M.TYPE=#{TYPE}
+         AND ROWNUM BETWEEN #{FROM}/2 AND #{TO}/2
+         ORDER BY M.STIME ASC
+         /* IF00017 读取派对消息  给     接收者  START*/
+
+	</select>
+	<select id="PartyMessageToSender_joinparty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+         /* IF00017 读取派对消息  给    发送者    START*/
+
+		SELECT   M.ID AS m_id,
+         M.STATUS AS m_status,
+         oracle_to_unix (M.STIME) AS m_stime,
+         (60-ROUND(TO_NUMBER(SYSDATE-M.STIME)* 24 * 60)) AS m_dtime,
+         M.MSG AS m_msg,
+         M.SENDER_USERID AS sender_userid,
+         M.USER_ID AS USER_ID,
+         M.BINFO AS BINFO,
+         M.SIGN AS SIGN
+  FROM   C_MESSAGE M
+ WHERE   M.SENDER_USERID = #{UID} AND M.TYPE = #{TYPE}
+         AND M.USER_ID =
+               (SELECT   USER_ID
+                  FROM   C_TAKE T
+                 WHERE   T.P_ID =
+                            (SELECT   M.BINFO AS PID
+                               FROM   C_MESSAGE M
+                              WHERE       M.SENDER_USERID = #{UID}
+                                      AND M.TYPE = #{TYPE}
+                                      AND ROWNUM = 1)
+                         AND T.TYPE = '1'
+                         AND ROWNUM = 1)
+                          AND M.SIGN='joinparty'
+         AND ROWNUM BETWEEN #{FROM}/2 AND #{TO}/2
+          ORDER BY M.STIME ASC  
+         /* IF00017 读取派对消息  给    发送者     END*/
+	</select>
+	<select id="PartyMessageToSender_comcreater" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+         /* IF00017 读取派对消息  给    发送者    START*/
+		SELECT   M.ID AS m_id,
+         M.STATUS AS m_status,
+         oracle_to_unix (M.STIME) AS m_stime,
+         (60-ROUND(TO_NUMBER(SYSDATE-M.STIME)* 24 * 60)) AS m_dtime,
+         M.MSG AS m_msg,
+         M.SENDER_USERID AS sender_userid,
+         M.USER_ID AS USER_ID,
+         M.BINFO AS BINFO,
+         M.SIGN AS SIGN
+  FROM   C_MESSAGE M
+ WHERE   M.SENDER_USERID = #{UID} AND M.TYPE = 'party'
+        AND M.USER_ID = (SELECT USER_ID  FROM C_MESSAGE  T WHERE T.BINFO = (SELECT   M.BINFO AS PID
+                  FROM   C_MESSAGE M
+                 WHERE       M.SENDER_USERID =#{UID}
+                         AND M.TYPE = 'party'
+                         AND M.SIGN='comcreater'
+                         AND ROWNUM = 1) AND T.TYPE = #{TYPE}  AND T.SIGN='comcreater' AND ROWNUM = 1)
+                          AND M.SIGN='comcreater'
+         AND ROWNUM BETWEEN #{FROM}/2 AND #{TO}/2
+          ORDER BY M.STIME ASC
+         /* IF00017 读取派对消息  给    发送者     END*/
+	</select>
+	<select id="PartyMessageForTotal" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT COUNT(*)  AS total FROM C_MESSAGE M WHERE M.USER_ID=#{UID}
+      AND M.TYPE=#{TYPE}
+	</select>
+	<select id="PartyToMessageForTotal" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		  /* IF00050 读取数量 START*/
+		SELECT COUNT(*)  AS total FROM M_VIEW V WHERE V.USER_ID=#{UID}
+		 /* IF00050 读取数量 START*/
+	</select>
+	<select id="sendUserToParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 SELECT   U.UUID AS sender_id,
+         U.NICK AS sender_nick,
+         U.PIC AS sender_pic,
+         U.SEX AS sender_sex,
+         U.AGE AS sender_age,
+         U.CITY AS sender_city,
+         U.LOCAL AS sender_local,
+         U.DES AS sender_des,
+         U.STATUS AS sender_status
+  		 FROM   C_USER U
+ 		 WHERE   U.UUID =#{UID}
+	</select>
+	<select id="creat_Info" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 SELECT   U.UUID AS user_id,
+         U.NICK AS creat_nick,
+         U.PIC AS creat_pic,
+         U.SEX AS creat_sex,
+         U.AGE AS creat_age,
+         U.CITY AS creat_city,
+         U.LOCAL AS creat_local,
+         U.DES AS creat_des,
+         U.STATUS AS creat_status
+  		 FROM   C_USER U
+ 		 WHERE   U.UUID =#{UID}
+	</select>
+	<select id="reUserInfo" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT M.USER_ID AS user_id FROM C_MESSAGE M WHERE M.USER_ID=#{UID} AND M.BINFO=#{PID} AND M.TYPE=#{TYPE}
+	</select>
+	<select id="reUserToInfo" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 SELECT   U.UUID AS user_id,
+         U.NICK AS user_nick,
+         U.PIC AS user_pic,
+         U.SEX AS user_sex,
+         U.AGE AS user_age,
+         U.CITY AS user_city,
+         U.LOCAL AS user_local,
+         U.DES AS user_des,
+         U.STATUS AS user_status
+  		FROM   C_USER U
+ 		WHERE   U.UUID = #{RUID}
+	</select>
+	<select id="reUserToInfoFroUser_ID" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		 SELECT
+         U.NICK AS user_nick,
+         U.PIC AS user_pic,
+         U.SEX AS user_sex,
+         U.AGE AS user_age,
+         U.CITY AS user_city,
+         U.LOCAL AS user_local,
+         U.DES AS user_des,
+         U.STATUS AS user_status
+  		FROM   C_USER U
+ 		WHERE   U.UUID = #{RUID}
+	</select>
+	<select id="comCreatersPic" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT   U.PIC AS puni_image, U.NICK AS puni_nick
+  FROM   C_TAKE T, C_USER U
+ WHERE       T.USER_ID = U.UUID
+         AND T.P_ID = #{PID}
+         AND T.TYPE = '2'
+         AND T.STATUS = 'Y'
+	</select>
+	<select id="Count_comCreatersPic" parameterType="java.util.Map"
+		 resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM C_TAKE T,C_USER U WHERE T.USER_ID = U.UUID AND T.TYPE='2' AND T.P_ID=#{PID}
+	</select>
+	<select id="Creaters_Info" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT U.NICK AS ps_name,U.PIC AS ps_image,U.SEX AS ps_sex FROM C_USER U WHERE U.UUID=#{UID}
+	</select>
+	<select id="Partys_Info" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		WITH partdata AS (SELECT   ROWNUM rowno,P.TITLE AS p_title,
+         P.ID AS p_id,
+         P.LOCAL AS p_local,
+         P.STIME AS p_stime,
+         P.USER_ID AS user_id
+  FROM   C_PARTY P, C_COLLECTION C
+ WHERE   P.C_ID = C.ID AND C.ID=#{CID}
+ AND P.STATUS='Y')
+ SELECT   *
+  FROM   partdata
+ WHERE   rowno BETWEEN #{FROM} AND #{TO}
+ 		ORDER BY ROWNO
+	</select>
+	<select id="Count_Partys_Info" parameterType="java.util.Map"
+		 resultType="java.lang.Integer">
+		SELECT  COUNT(*) FOM  FROM   C_PARTY P, C_COLLECTION C
+ WHERE   P.C_ID = C.ID AND C.ID=#{CID}
+ AND P.STATUS='Y'
+	</select>
+	<select id="Activity_label" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT   Y.VALUE AS c_label
+  		FROM   C_COLLECTION C, CM_PROPERTY Y
+	    WHERE   Y.PROPERTY = 'TYPE' AND Y.NAME = C.TYPE	 AND C.ID=#{CID}
+	</select>
+	<select id="AddfriendToParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	INSERT INTO C_MESSAGE(ID,TYPE,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,BINFO,
+      SIGN ,STIME)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'friend',#{UID},#{FID},'N','0','0',
+      '0',#{PID},
+      'party',SYSDATE)
+	</select>
+	<select id="DeletefriendToParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	DELETE FROM C_MESSAGE M WHERE M.SENDER_USERID = #{UID} AND M.USER_ID=#{FID} AND M.BINFO=#{PID}
+	</select>
+	<select id="DeletefriendTofriendParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	DELETE FROM C_TAKE T WHERE T.USER_ID= #{FID} AND T.P_ID=#{PID}
+	</select>
+	<select id="InsertfriendTofriendParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+	INSERT INTO C_TAKE(ID,P_ID,USER_ID,UPDATETIME,STATUS,TYPE) VALUES(SEQ_TAKE_ID.NEXTVAL,#{PID},#{FID},
+      SYSDATE,'N','1')
+	</select>
+	<select id="Message_For_Party" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,BINFO,SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'party',SYSDATE,#{UID},#{FID},'W','0','0',
+      '0',#{PID},'comcreater')
+	</select>
+	<select id="insertInvitational" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,BINFO,SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'system',SYSDATE,0,#{UID},'W','0',#{INVITE},
+      '0',#{PID},'pass')
+	</select>
+	<select id="insertMessage_ForParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,BINFO,SIGN)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'party',SYSDATE,#{UID},#{PUID},'W','0',#{INVITE},
+      '0',#{PID},'joinparty')
+	</select>
+	<select id="Delete_Message_ForParty" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		DELETE FROM C_MESSAGE WHERE SENDER_USERID=#{UID} AND USER_ID=#{PUID} AND BINFO=#{PID}
+	</select>
+	<select id="insertMessage_ForParty_PartyCreater" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		INSERT INTO C_MESSAGE(ID,TYPE,STIME,SENDER_USERID,USER_ID,STATUS,CONTENT,MSG,
+      ACCEPT,BINFO)
+      VALUES(SEQ_MESSAGE_ID.NEXTVAL,'party',SYSDATE,0,#{PUID},'W','0',#{INVITE},
+      '0',#{PID})
+	</select>
+	<select id="Select_Party_User" parameterType="java.util.Map"
+		 resultType="java.util.Map">
+		SELECT P.USER_ID AS USERID,P.TYPE AS PTYPE,P.C_ID AS CID FROM C_PARTY P WHERE P.ID=#{PID}
+	</select>
+	<select id="Select_IndexNum_ForSystem" parameterType="java.util.Map" resultType="java.lang.Integer">
+	SELECT   COUNT (*)
+  FROM   C_MESSAGE M
+ WHERE   M.TYPE = #{TYPE} AND M.USER_ID=#{UID}
+	</select>
+	<update id="Update_M_CountForParty" parameterType="java.util.Map">
+	UPDATE   M_COUNT C
+   SET   C.P_COUNT = C.P_COUNT + 1
+ WHERE   USER_ID = #{UID}
+	</update>
+	<update id="Update_M_CountForParty_ToCreater" parameterType="java.util.Map">
+	UPDATE   M_COUNT C
+   SET   C.P_COUNT = C.P_COUNT + 1
+ WHERE   USER_ID = #{FID}
+	</update>
+	<update id="Update_M_CountForSystem" parameterType="java.util.Map">
+	UPDATE   M_COUNT C
+       SET   C.SYS_COUNT = C.SYS_COUNT + 1
+     WHERE   USER_ID = #{UID}
+	</update>
+	<update id="Update_M_CountForSystemForPass" parameterType="java.util.Map">
+	UPDATE   M_COUNT C
+       SET   C.SYS_COUNT = C.SYS_COUNT + 1
+     WHERE   USER_ID = #{UID}
+	</update>
+</mapper>

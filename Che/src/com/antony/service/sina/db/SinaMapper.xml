@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antony.service.sina.db.SinaMapper">
+	<select id="queryFriendShipByUUIDAndSUID" parameterType="java.util.Map"
+		resultType="java.util.Map">
+		/** 通过本地数据库查询好友关系 START **/
+
+		SELECT 
+		S.ID,
+		S.SINA_NICK,
+		S.USER_ID,
+		S.SINA_AGE,
+		S.SINA_SEX,
+		S.SINA_CITY,
+		S.SINA_LOCAL,
+		S.SINA_DES,
+		S.SINA_PICURL
+		FROM C_SINA_FRIENDSHIP F, C_SINA S
+		WHERE F.FRIEND_SINA_ID = S.SINA_ID
+		AND F.USER_ID = #{UUID}
+
+		/** 通过本地数据库查询好友关系 END **/
+	</select>
+
+
+	<select id="queryFriendShipId" resultType="java.lang.Integer">
+		/* 获得新浪 好友关系 表 主键 =========================*/
+		SELECT SEQ_FRIENDSHIP_ID.NEXTVAL FROM DUAL
+	</select>
+	<select id="getUUIDBySinaId" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		/* \n\n 查询 本地数据库 通过SINA_ID 返回UUID START \n\n========*/
+		SELECT USER_ID FROM C_SET WHERE BOUND_SINA_ID = #{suid}
+		/* \n\n 查询
+		本地数据库 通过SINA_ID 返回UUID END \n\n========*/
+	</select>
+	<select id="getSinaPkBySinaId" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		/* \n\n 查询 本地数据库是否纯在 Sina帐号 信息返回 PK ID START \n\n========*/
+		SELECT NVL(ID,0) AS ID FROM C_SINA WHERE SINA_ID = #{suid}
+		/* \n\n 查询
+		本地数据库是否纯在 Sina帐号 信息返回 PK ID END \n\n========*/
+	</select>
+	<select id="hasUserSet" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM C_SET WHERE USER_ID = #{UUID}
+	</select>
+	<select id="hasUserSetByBOUNDSINAID" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM C_SET WHERE BOUND_SINA_ID = #{SUID}
+	</select>
+	<select id="countSinaUserByUuidanfSuid" parameterType="java.util.Map"
+		resultType="java.lang.Integer">
+		SELECT COUNT ( * )
+		FROM C_SET S, C_USER U
+		WHERE U.UUID =
+		S.USER_ID
+		AND USER_ID = #{UUID}
+		AND BOUND_SINA_ID = #{SUID}
+	</select>
+
+	<select id="hasSinaAccount" parameterType="java.lang.String"
+		resultType="java.lang.Integer">
+		SELECT COUNT(*) FROM C_SINA WHERE USER_ID = #{UUID} AND
+		SINA_ID = #{SUID}
+	</select>
+
+	<select id="queryId" resultType="java.lang.Integer">
+		/* 获得新浪 表 主键
+		=========================*/
+		SELECT SEQ_C_SINA_ID.NEXTVAL FROM DUAL
+	</select>
+
+
+	<insert id="insertSinaAccount" parameterType="java.util.Map">
+		/* 插入新浪数据库
+		=========================*/
+
+		INSERT INTO C_SINA (
+		ID,
+		<if test="userId != null">
+		    USER_ID,
+		</if>
+		<if test="sinaId != null">
+		    SINA_ID,
+    	</if>
+		<if test="sinaNick != null">
+		    SINA_NICK,
+    	</if>
+    	<if test="sinaSex != null">
+			SINA_SEX,
+    	</if>
+    	<if test="sinaAge != null">
+		    SINA_AGE,
+    	</if>
+    	<if test="sinaCity != null">
+		    SINA_CITY,
+    	</if>
+    	<if test="sinaLocal != null">
+		    SINA_LOCAL,
+    	</if>
+    	<if test="sinaDes != null">
+		    SINA_DES,
+    	</if>
+		UPDATETIME,
+		<if test="status != null">
+		  	SINA_PICURL,
+    	</if>
+		STATUS
+		) VALUES (
+		SEQ_C_SINA_ID.NEXTVAL,
+		<if test="userId != null">
+		    #{userId},
+		</if>
+		<if test="sinaId != null">
+		    #{sinaId},
+    	</if>
+		<if test="sinaNick != null">
+		    #{sinaNick},
+    	</if>
+    	<if test="sinaSex != null">
+			#{sinaSex},
+    	</if>
+    	<if test="sinaAge != null">
+		    #{sinaAge},
+    	</if>
+    	<if test="sinaCity != null">
+		    #{sinaCity},
+    	</if>
+    	<if test="sinaLocal != null">
+		    #{sinaLocal},
+    	</if>
+    	<if test="sinaDes != null">
+		    #{sinaDes},
+    	</if>
+		SYSDATE,
+		<if test="sinaPicUrl != null">
+		  	#{sinaPicUrl},
+    	</if>
+		<if test="status != null">
+		  	#{status}
+    	</if>
+		)
+	</insert>
+
+	<insert id="insertFriendShip" parameterType="java.util.Map">
+		insert into C_SINA_FRIENDSHIP
+		(
+				ID,
+			<if test="userId != null">
+				USER_ID,
+			</if>
+			<if test="friendId != null">
+				FRIEND_ID,
+			</if>
+			<if test="sinaId != null">
+				SINA_ID,
+			</if>
+			<if test="ainfo != null">
+				AINFO,
+			</if>
+			<if test="binfo != null">
+				BINFO,
+			</if>
+			<if test="friendSinaId != null">
+				FRIEND_SINA_ID,
+			</if>
+			UPDATETIME
+		) values (
+				SEQ_FRIENDSHIP_ID.NEXTVAL,
+			<if test="userId != null">
+				#{userId,jdbcType=DECIMAL},
+			</if>
+			<if test="friendId != null">
+				#{friendId,jdbcType=DECIMAL},
+			</if>
+			<if test="sinaId != null">
+				#{sinaId,jdbcType=VARCHAR},
+			</if>
+			<if test="ainfo != null">
+				#{ainfo,jdbcType=VARCHAR},
+			</if>
+			<if test="binfo != null">
+				#{binfo,jdbcType=VARCHAR},
+			</if>
+			<if test="friendSinaId != null">
+				#{friendSinaId,jdbcType=VARCHAR},
+			</if>
+				SYSDATE
+				)
+	</insert>
+	<delete id="deletSinaAccount" parameterType="java.util.Map">
+	    /* 删除 原有的   c sina account  数据   START*/
+	    DELETE FROM C_SINA WHERE SINA_ID = #{sinaId}
+	    /* 删除 原有的   c sina account  数据   END*/
+	</delete>
+	<delete id="deletSinaFriendShip" parameterType="java.util.Map">
+	    /* 删除 原有的   c sina friend ship  数据   START*/
+	    DELETE FROM C_SINA_FRIENDSHIP WHERE SINA_ID = #{sinaId} AND FRIEND_SINA_ID = #{friendSinaId}
+	    /* 删除 原有的   c sina friend ship  数据   END*/
+	</delete>
+	
+
+</mapper>

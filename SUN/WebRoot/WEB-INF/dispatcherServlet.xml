@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!-- 文件上传映射 -->
+	<bean id="multipartResolver"
+		class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="10000000" />
+	</bean>
+
+
+	<!-- 控制器映射 -->
+	<bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+		<property name="interceptors">
+			<list>
+				<ref bean="loginInterceptor"></ref>
+				<ref bean="FileUploadInterceptor"></ref>
+			</list>
+		</property>
+		<property name="mappings">
+			<props>
+				<!-- 新版系统管理 -->
+				<prop key="/admin/root.do">adminIndexController</prop>
+				<prop key="/admin/user.do">adminUserController</prop>
+				<prop key="/admin/group.do">adminGroupController</prop>
+				<prop key="/admin/news.do">adminNewsController</prop>
+				<prop key="/admin/project.do">adminProjectController</prop>
+				<prop key="/admin/protype.do">adminProtypeController</prop>
+				<prop key="/admin/page.do">adminPageController</prop>
+				<prop key="/admin/honour.do">adminHonourController</prop>
+				<prop key="/admin/culture.do">adminCultureController</prop>
+				<prop key="/admin/zhaopin.do">adminZhaopinController</prop>
+				<prop key="/admin/type.do">adminNewsTypeController</prop>
+				<prop key="/admin/login.do">adminLoginController</prop>
+				<prop key="/admin/logout.do">adminLogoutController</prop>
+				<prop key="/admin/event.do">adminEventController</prop>
+				<prop key="/admin/file.do">adminFileController</prop>
+				<prop key="/admin/upload.do">adminUploadFileController</prop>
+				<prop key="/admin/contact.do">adminContactController</prop>
+				<prop key="/admin/about.do">adminAboutController</prop>
+				<prop key="/admin/link.do">adminLinkController</prop>
+				<prop key="/admin/sys.do">adminSysController</prop>
+				<prop key="/index.do">frontIndexController</prop>
+				<prop key="/news.do">frontNewsController</prop>
+				<prop key="/project.do">frontProjectController</prop>
+				<prop key="/honour.do">frontHonourController</prop>
+				<prop key="/culture.do">frontCultureController</prop>
+				<prop key="/zhaopin.do">frontZhaopinController</prop>
+				<prop key="/contact.do">frontContactController</prop>
+				<prop key="/about.do">frontAboutController</prop>
+				<prop key="/search.do">frontSearchController</prop>
+			</props>
+		</property>
+	</bean>
+
+	<!-- 登录拦截器 -->
+	<bean id="loginInterceptor" class="com.sun.core.interceptor.LoginInterceptor">
+		<property name="loginURL">
+			<value>/admin/login.do</value>
+		</property>
+		<property name="exactMatch">
+			<value>false</value>
+		</property>
+		<property name="ignoreURLs"><!-- 不拦截的地址 -->
+			<list>
+				<!-- 匿名用户部分，URL格式：/开头 -->
+				<value>/admin/login.do</value> <!-- 我的项目 -->
+				<value>/admin/logout.do</value> <!-- 我的项目 -->
+				<value>/admin/upload.do</value> <!-- 我的项目 -->
+				<value>/index.do</value> <!-- 我的项目 -->
+				<value>/news.do</value> <!-- 我的项目 -->
+				<value>/project.do</value> <!-- 我的项目 -->
+				<value>/honour.do</value> <!-- 我的项目 -->
+				<value>/culture.do</value> <!-- 我的项目 -->
+				<value>/zhaopin.do</value> <!-- 我的项目 -->
+				<value>/contact.do</value> <!-- 我的项目 -->
+				<value>/about.do</value> <!-- 我的项目 -->
+				<value>/search.do</value> <!-- 我的项目 -->
+			</list>
+		</property>
+	</bean>
+	<!-- 文件上传拦截器 -->
+	<bean id="FileUploadInterceptor" class="com.sun.core.interceptor.FileUploadInterceptor">
+		<property name="exactMatch">
+			<value>false</value>
+		</property>
+		<property name="uploadPath" value="/Upload/" />
+		<property name="dirType" value="2" />
+		<property name="adapterURLs"><!-- 不拦截的地址 -->
+			<list>
+				<value>/admin/upload.do</value> <!-- 我的项目 -->
+			</list>
+		</property>
+	</bean>
+	<bean id="filenameController"
+		class="org.springframework.web.servlet.mvc.UrlFilenameViewController" />
+
+	<bean id="xmlViewResolver" class="org.springframework.web.servlet.view.XmlViewResolver">
+		<property name="order" value="1" />
+		<property name="location" value="/WEB-INF/views.xml" />
+	</bean>
+
+	<bean id="viewResolver"
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
+		<property name="prefix" value="/WEB-INF/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+
+
+	<!-- 异常工具类 -->
+	<bean id="exceptionUtil" class="com.sun.core.util.ExceptionUtil" />
+
+	<!-- 常用工具类 -->
+	<bean id="commonUtil" class="com.sun.core.util.CommonUtil" />
+</beans>

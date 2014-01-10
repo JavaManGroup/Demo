@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminNewsController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.admin.news.RootProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="admin/news/list" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.admin.news.ListProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="admin/news/list" />
+					</bean>
+				</entry>
+				<entry key="addview">
+					<bean class="com.sun.app.process.admin.news.AddViewProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="admin/news/add_view" />
+					</bean>
+				</entry>
+				<entry key="adddialog">
+					<bean class="com.sun.app.process.admin.news.AddViewProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="admin/news/add_dialog" />
+					</bean>
+				</entry>
+				<entry key="add">
+					<bean class="com.sun.app.process.admin.news.AddProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="editview">
+					<bean class="com.sun.app.process.admin.news.EditViewProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="admin/news/edit_view" />
+					</bean>
+				</entry>
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.news.EditProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="delete">
+					<bean class="com.sun.app.process.admin.news.DeleteProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="setIsHome">
+					<bean class="com.sun.app.process.admin.news.SetIsHomeProcess">
+						<property name="appName" value="news" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

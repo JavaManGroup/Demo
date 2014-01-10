@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminCultureController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.admin.culture.DefaultProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="admin/culture/default" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.admin.culture.ListProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="admin/culture/list" />
+					</bean>
+				</entry>
+				<entry key="addview">
+					<bean class="com.sun.app.process.admin.culture.AddViewProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="admin/culture/add_view" />
+					</bean>
+				</entry>
+				<entry key="addcontentview">
+					<bean class="com.sun.app.process.admin.culture.AddViewProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="admin/culture/add_content_view" />
+					</bean>
+				</entry>
+				<entry key="add">
+					<bean class="com.sun.app.process.admin.culture.AddProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="addcontent">
+					<bean class="com.sun.app.process.admin.culture.AddContentProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="editview">
+					<bean class="com.sun.app.process.admin.culture.EditViewProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="admin/culture/edit_view" />
+					</bean>
+				</entry>	
+				<entry key="editcontentview">
+					<bean class="com.sun.app.process.admin.culture.EditContentViewProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="admin/culture/edit_content_view" />
+					</bean>
+				</entry>	
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.culture.EditProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="editcontent">
+					<bean class="com.sun.app.process.admin.culture.EditContentProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="delete">
+					<bean class="com.sun.app.process.admin.culture.DeleteProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>					
+				<entry key="deletecontent">
+					<bean class="com.sun.app.process.admin.culture.DeleteContentProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>					
+				<entry key="sort">
+					<bean class="com.sun.app.process.admin.culture.SortProcess">
+						<property name="appName" value="culture" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>					
+			</map>
+		</property>
+	</bean>
+</beans>

@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antony.service.sina.db.CSinaMapper" >
+  <resultMap id="BaseResultMap" type="com.antony.service.sina.vo.CSina" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="SINA_ID" property="sinaId" jdbcType="VARCHAR" />
+    <result column="SINA_NICK" property="sinaNick" jdbcType="VARCHAR" />
+    <result column="SINA_SEX" property="sinaSex" jdbcType="VARCHAR" />
+    <result column="SINA_AGE" property="sinaAge" jdbcType="DECIMAL" />
+    <result column="SINA_CITY" property="sinaCity" jdbcType="VARCHAR" />
+    <result column="SINA_LOCAL" property="sinaLocal" jdbcType="VARCHAR" />
+    <result column="SINA_DES" property="sinaDes" jdbcType="VARCHAR" />
+    <result column="SINA_PICURL" property="sinaPicurl" jdbcType="VARCHAR" />
+    <result column="UPDATETIME" property="updatetime" jdbcType="DATE" />
+    <result column="STATUS" property="status" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, USER_ID, SINA_ID, SINA_NICK, SINA_SEX, SINA_AGE, SINA_CITY, SINA_LOCAL, SINA_DES, 
+    SINA_PICURL, UPDATETIME, STATUS
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.antony.service.sina.vo.CSinaExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from C_SINA
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+      <if test="limitStart>0" >
+        limit ${limitStart} , ${limitEnd}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from C_SINA
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from C_SINA
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.antony.service.sina.vo.CSinaExample" >
+    delete from C_SINA
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.antony.service.sina.vo.CSina" >
+    insert into C_SINA (ID, USER_ID, SINA_ID, 
+      SINA_NICK, SINA_SEX, SINA_AGE, 
+      SINA_CITY, SINA_LOCAL, SINA_DES, 
+      SINA_PICURL, UPDATETIME, STATUS
+      )
+    values (#{id,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{sinaId,jdbcType=VARCHAR}, 
+      #{sinaNick,jdbcType=VARCHAR}, #{sinaSex,jdbcType=VARCHAR}, #{sinaAge,jdbcType=DECIMAL}, 
+      #{sinaCity,jdbcType=VARCHAR}, #{sinaLocal,jdbcType=VARCHAR}, #{sinaDes,jdbcType=VARCHAR}, 
+      #{sinaPicurl,jdbcType=VARCHAR}, #{updatetime,jdbcType=DATE}, #{status,jdbcType=VARCHAR}
+      )
+  </insert>
+  <insert id="insertSelective" parameterType="com.antony.service.sina.vo.CSina" >
+    insert into C_SINA
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="sinaId != null" >
+        SINA_ID,
+      </if>
+      <if test="sinaNick != null" >
+        SINA_NICK,
+      </if>
+      <if test="sinaSex != null" >
+        SINA_SEX,
+      </if>
+      <if test="sinaAge != null" >
+        SINA_AGE,
+      </if>
+      <if test="sinaCity != null" >
+        SINA_CITY,
+      </if>
+      <if test="sinaLocal != null" >
+        SINA_LOCAL,
+      </if>
+      <if test="sinaDes != null" >
+        SINA_DES,
+      </if>
+      <if test="sinaPicurl != null" >
+        SINA_PICURL,
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME,
+      </if>
+      <if test="status != null" >
+        STATUS,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="sinaId != null" >
+        #{sinaId,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaNick != null" >
+        #{sinaNick,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaSex != null" >
+        #{sinaSex,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaAge != null" >
+        #{sinaAge,jdbcType=DECIMAL},
+      </if>
+      <if test="sinaCity != null" >
+        #{sinaCity,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaLocal != null" >
+        #{sinaLocal,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaDes != null" >
+        #{sinaDes,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaPicurl != null" >
+        #{sinaPicurl,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        #{updatetime,jdbcType=DATE},
+      </if>
+      <if test="status != null" >
+        #{status,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.antony.service.sina.vo.CSinaExample" resultType="java.lang.Integer" >
+    select count(*) from C_SINA
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update C_SINA
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sinaId != null" >
+        SINA_ID = #{record.sinaId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sinaNick != null" >
+        SINA_NICK = #{record.sinaNick,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sinaSex != null" >
+        SINA_SEX = #{record.sinaSex,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sinaAge != null" >
+        SINA_AGE = #{record.sinaAge,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sinaCity != null" >
+        SINA_CITY = #{record.sinaCity,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sinaLocal != null" >
+        SINA_LOCAL = #{record.sinaLocal,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sinaDes != null" >
+        SINA_DES = #{record.sinaDes,jdbcType=VARCHAR},
+      </if>
+      <if test="record.sinaPicurl != null" >
+        SINA_PICURL = #{record.sinaPicurl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.updatetime != null" >
+        UPDATETIME = #{record.updatetime,jdbcType=DATE},
+      </if>
+      <if test="record.status != null" >
+        STATUS = #{record.status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update C_SINA
+    set ID = #{record.id,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=DECIMAL},
+      SINA_ID = #{record.sinaId,jdbcType=VARCHAR},
+      SINA_NICK = #{record.sinaNick,jdbcType=VARCHAR},
+      SINA_SEX = #{record.sinaSex,jdbcType=VARCHAR},
+      SINA_AGE = #{record.sinaAge,jdbcType=DECIMAL},
+      SINA_CITY = #{record.sinaCity,jdbcType=VARCHAR},
+      SINA_LOCAL = #{record.sinaLocal,jdbcType=VARCHAR},
+      SINA_DES = #{record.sinaDes,jdbcType=VARCHAR},
+      SINA_PICURL = #{record.sinaPicurl,jdbcType=VARCHAR},
+      UPDATETIME = #{record.updatetime,jdbcType=DATE},
+      STATUS = #{record.status,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.antony.service.sina.vo.CSina" >
+    update C_SINA
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="sinaId != null" >
+        SINA_ID = #{sinaId,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaNick != null" >
+        SINA_NICK = #{sinaNick,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaSex != null" >
+        SINA_SEX = #{sinaSex,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaAge != null" >
+        SINA_AGE = #{sinaAge,jdbcType=DECIMAL},
+      </if>
+      <if test="sinaCity != null" >
+        SINA_CITY = #{sinaCity,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaLocal != null" >
+        SINA_LOCAL = #{sinaLocal,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaDes != null" >
+        SINA_DES = #{sinaDes,jdbcType=VARCHAR},
+      </if>
+      <if test="sinaPicurl != null" >
+        SINA_PICURL = #{sinaPicurl,jdbcType=VARCHAR},
+      </if>
+      <if test="updatetime != null" >
+        UPDATETIME = #{updatetime,jdbcType=DATE},
+      </if>
+      <if test="status != null" >
+        STATUS = #{status,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.antony.service.sina.vo.CSina" >
+    update C_SINA
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      SINA_ID = #{sinaId,jdbcType=VARCHAR},
+      SINA_NICK = #{sinaNick,jdbcType=VARCHAR},
+      SINA_SEX = #{sinaSex,jdbcType=VARCHAR},
+      SINA_AGE = #{sinaAge,jdbcType=DECIMAL},
+      SINA_CITY = #{sinaCity,jdbcType=VARCHAR},
+      SINA_LOCAL = #{sinaLocal,jdbcType=VARCHAR},
+      SINA_DES = #{sinaDes,jdbcType=VARCHAR},
+      SINA_PICURL = #{sinaPicurl,jdbcType=VARCHAR},
+      UPDATETIME = #{updatetime,jdbcType=DATE},
+      STATUS = #{status,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="getNextId" resultType="java.lang.Integer" >
+    select max(ID)+1 as id from C_SINA
+  </select>
+</mapper>

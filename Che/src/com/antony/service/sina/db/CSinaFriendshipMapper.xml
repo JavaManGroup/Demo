@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.antony.service.sina.db.CSinaFriendshipMapper" >
+  <resultMap id="BaseResultMap" type="com.antony.service.sina.vo.CSinaFriendship" >
+    <id column="ID" property="id" jdbcType="DECIMAL" />
+    <result column="USER_ID" property="userId" jdbcType="DECIMAL" />
+    <result column="FRIEND_ID" property="friendId" jdbcType="DECIMAL" />
+    <result column="SINA_ID" property="sinaId" jdbcType="VARCHAR" />
+    <result column="AINFO" property="ainfo" jdbcType="VARCHAR" />
+    <result column="BINFO" property="binfo" jdbcType="VARCHAR" />
+    <result column="FRIEND_SINA_ID" property="friendSinaId" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    ID, USER_ID, FRIEND_ID, SINA_ID, AINFO, BINFO, FRIEND_SINA_ID
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.antony.service.sina.vo.CSinaFriendshipExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from C_SINA_FRIENDSHIP
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+      <if test="limitStart>0" >
+        limit ${limitStart} , ${limitEnd}
+      </if>
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+    select 
+    <include refid="Base_Column_List" />
+    from C_SINA_FRIENDSHIP
+    where ID = #{id,jdbcType=DECIMAL}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+    delete from C_SINA_FRIENDSHIP
+    where ID = #{id,jdbcType=DECIMAL}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.antony.service.sina.vo.CSinaFriendshipExample" >
+    delete from C_SINA_FRIENDSHIP
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.antony.service.sina.vo.CSinaFriendship" >
+    insert into C_SINA_FRIENDSHIP (ID, USER_ID, FRIEND_ID, 
+      SINA_ID, AINFO, BINFO, 
+      FRIEND_SINA_ID)
+    values (#{id,jdbcType=DECIMAL}, #{userId,jdbcType=DECIMAL}, #{friendId,jdbcType=DECIMAL}, 
+      #{sinaId,jdbcType=VARCHAR}, #{ainfo,jdbcType=VARCHAR}, #{binfo,jdbcType=VARCHAR}, 
+      #{friendSinaId,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.antony.service.sina.vo.CSinaFriendship" >
+    insert into C_SINA_FRIENDSHIP
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        ID,
+      </if>
+      <if test="userId != null" >
+        USER_ID,
+      </if>
+      <if test="friendId != null" >
+        FRIEND_ID,
+      </if>
+      <if test="sinaId != null" >
+        SINA_ID,
+      </if>
+      <if test="ainfo != null" >
+        AINFO,
+      </if>
+      <if test="binfo != null" >
+        BINFO,
+      </if>
+      <if test="friendSinaId != null" >
+        FRIEND_SINA_ID,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="id != null" >
+        #{id,jdbcType=DECIMAL},
+      </if>
+      <if test="userId != null" >
+        #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="friendId != null" >
+        #{friendId,jdbcType=DECIMAL},
+      </if>
+      <if test="sinaId != null" >
+        #{sinaId,jdbcType=VARCHAR},
+      </if>
+      <if test="ainfo != null" >
+        #{ainfo,jdbcType=VARCHAR},
+      </if>
+      <if test="binfo != null" >
+        #{binfo,jdbcType=VARCHAR},
+      </if>
+      <if test="friendSinaId != null" >
+        #{friendSinaId,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.antony.service.sina.vo.CSinaFriendshipExample" resultType="java.lang.Integer" >
+    select count(*) from C_SINA_FRIENDSHIP
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update C_SINA_FRIENDSHIP
+    <set >
+      <if test="record.id != null" >
+        ID = #{record.id,jdbcType=DECIMAL},
+      </if>
+      <if test="record.userId != null" >
+        USER_ID = #{record.userId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.friendId != null" >
+        FRIEND_ID = #{record.friendId,jdbcType=DECIMAL},
+      </if>
+      <if test="record.sinaId != null" >
+        SINA_ID = #{record.sinaId,jdbcType=VARCHAR},
+      </if>
+      <if test="record.ainfo != null" >
+        AINFO = #{record.ainfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.binfo != null" >
+        BINFO = #{record.binfo,jdbcType=VARCHAR},
+      </if>
+      <if test="record.friendSinaId != null" >
+        FRIEND_SINA_ID = #{record.friendSinaId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update C_SINA_FRIENDSHIP
+    set ID = #{record.id,jdbcType=DECIMAL},
+      USER_ID = #{record.userId,jdbcType=DECIMAL},
+      FRIEND_ID = #{record.friendId,jdbcType=DECIMAL},
+      SINA_ID = #{record.sinaId,jdbcType=VARCHAR},
+      AINFO = #{record.ainfo,jdbcType=VARCHAR},
+      BINFO = #{record.binfo,jdbcType=VARCHAR},
+      FRIEND_SINA_ID = #{record.friendSinaId,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.antony.service.sina.vo.CSinaFriendship" >
+    update C_SINA_FRIENDSHIP
+    <set >
+      <if test="userId != null" >
+        USER_ID = #{userId,jdbcType=DECIMAL},
+      </if>
+      <if test="friendId != null" >
+        FRIEND_ID = #{friendId,jdbcType=DECIMAL},
+      </if>
+      <if test="sinaId != null" >
+        SINA_ID = #{sinaId,jdbcType=VARCHAR},
+      </if>
+      <if test="ainfo != null" >
+        AINFO = #{ainfo,jdbcType=VARCHAR},
+      </if>
+      <if test="binfo != null" >
+        BINFO = #{binfo,jdbcType=VARCHAR},
+      </if>
+      <if test="friendSinaId != null" >
+        FRIEND_SINA_ID = #{friendSinaId,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.antony.service.sina.vo.CSinaFriendship" >
+    update C_SINA_FRIENDSHIP
+    set USER_ID = #{userId,jdbcType=DECIMAL},
+      FRIEND_ID = #{friendId,jdbcType=DECIMAL},
+      SINA_ID = #{sinaId,jdbcType=VARCHAR},
+      AINFO = #{ainfo,jdbcType=VARCHAR},
+      BINFO = #{binfo,jdbcType=VARCHAR},
+      FRIEND_SINA_ID = #{friendSinaId,jdbcType=VARCHAR}
+    where ID = #{id,jdbcType=DECIMAL}
+  </update>
+  <select id="getNextId" resultType="java.lang.Integer" >
+    select max(ID)+1 as id from C_SINA_FRIENDSHIP
+  </select>
+</mapper>

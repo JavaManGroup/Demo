@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminNewsTypeController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.admin.type.ListProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="admin/type/list" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.admin.type.ListProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="admin/type/list" />
+					</bean>
+				</entry>
+				<entry key="addview">
+					<bean class="com.sun.app.process.admin.type.AddViewProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="admin/type/add_view" />
+					</bean>
+				</entry>
+				<entry key="adddialog">
+					<bean class="com.sun.app.process.admin.type.AddViewProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="admin/type/add_dialog" />
+					</bean>
+				</entry>
+				<entry key="add">
+					<bean class="com.sun.app.process.admin.type.AddProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="editview">
+					<bean class="com.sun.app.process.admin.type.EditViewProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="admin/type/edit_view" />
+					</bean>
+				</entry>	
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.type.EditProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>	
+				<entry key="delete">
+					<bean class="com.sun.app.process.admin.type.DeleteProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>					
+				<entry key="sort">
+					<bean class="com.sun.app.process.admin.type.SortProcess">
+						<property name="appName" value="type" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>					
+			</map>
+		</property>
+	</bean>
+</beans>

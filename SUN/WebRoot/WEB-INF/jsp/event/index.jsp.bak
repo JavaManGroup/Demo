@@ -1,0 +1,72 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ include file="/commons/root/taglibs.jsp" %>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Event Page</title>
+<link href="${base}/front/css/main.css" rel="stylesheet" type="text/css">
+<script type="text/javascript" language="javascript" src="${base}/front/js/util.js"></script>
+<script type="text/javascript" language="javascript" src="${base}/front/js/jquery.js"></script>
+</head>
+
+<body>
+<%@ include file="/commons/event/topbar.jsp" %>
+<div id="main">
+	<!--标题行-->
+    <div class="subject margin10 padding10">
+    <div class="tit_image"></div><div class="sub_title">查看所有活动</div>
+    </div>
+    <!--选项卡-->
+    <div class="tab">
+    	<ul class="clear">
+        	<li class="li_active">我发布的</li>
+            <li>我参加的</li>
+            <li>全部活动</li>
+        </ul>
+    </div>
+    <!--活动列表-->
+    <div class="content margin10">
+    	<!--左边-->
+    	<div class="left" id="contentList">
+        	<!--一条活动-->
+        	<c:forEach var="e" items="${allEvent.list}" varStatus="it">
+        	<div class="piece">
+            	<img src="${base}/front/images/need.png" alt="Pic"/>
+                <div class="piece_right">
+                    <div class="piece_title"><a href="content.do" target="_blank">${e.title }</a></div>
+                    <div class="piece_time">${e.starttime }</div>
+                    <div class="piece_parti">${e.count}</div>
+                </div>
+                <a href="#" class="piece_rite">确认参加</a>
+            </div>
+        	</c:forEach>
+    	</div>
+    <!--右边-->
+    <div class="right margin10">
+    	<div class="user_head_div">
+    	<img src="images/default_user_avatar-huge.png" class="user_head">
+        <div class="user_head_right margin10">
+        	  <div class="user_head_id">Shi Yan</div>
+            <div class="user_head_create">发布:50</div>
+            <div class="user_head_create">参与:100</div>
+        </div>
+        </div>
+        <div class="user_bage">
+        	<div class="title" onclick="ContentList();">徽章</div>
+            <div class="user_bages">
+            	<div class="user_bage_one">One</div>
+              <div class="user_bage_one">One</div>
+            	<div class="user_bage_one">One</div>  
+            	<div class="user_bage_one">One</div>  
+            	<div class="user_bage_one">One</div>  
+            	<div class="user_bage_one">One</div>                                                
+            </div>
+        </div>
+    </div>
+    <!--右边  end-->
+    </div>
+</div>
+<%@ include file="/commons/event/footer.jsp" %>
+</body>
+</html>

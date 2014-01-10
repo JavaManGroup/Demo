@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="adminUserController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="list">
+					<bean class="com.sun.app.process.admin.user.ListProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="admin/user/list" />
+					</bean>
+				</entry>
+				<entry key="lookgroup">
+					<bean class="com.sun.app.process.admin.user.LookGroupProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="admin/user/lookgroup" />
+					</bean>
+				</entry>
+				<entry key="addview">
+					<bean class="com.sun.app.process.admin.user.AddViewProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="admin/user/add_view" />
+					</bean>
+				</entry>
+				<entry key="adddialog">
+					<bean class="com.sun.app.process.admin.user.AddViewProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="admin/user/add_dialog" />
+					</bean>
+				</entry>
+				<entry key="add">
+					<bean class="com.sun.app.process.admin.user.AddProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="editview">
+					<bean class="com.sun.app.process.admin.user.EditViewProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="admin/user/edit_view" />
+					</bean>
+				</entry>
+				<entry key="edit">
+					<bean class="com.sun.app.process.admin.user.EditProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="delete">
+					<bean class="com.sun.app.process.admin.user.DeleteProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="setPass">
+					<bean class="com.sun.app.process.admin.user.SetPasswordProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="jsonView" />
+					</bean>
+				</entry>
+				<entry key="setView">
+					<bean class="com.sun.app.process.admin.user.SetViewProcess">
+						<property name="appName" value="user" />
+						<property name="successView" value="admin/user/set_pass" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

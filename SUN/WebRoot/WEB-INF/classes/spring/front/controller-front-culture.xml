@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+	<!--后台管理登录-->
+	<bean id="frontCultureController" class="com.sun.app.common.BaseController">
+		<property name="processMap">
+			<map>
+				<entry key="default">
+					<bean class="com.sun.app.process.front.culture.CultureProcess">
+						<property name="successView" value="front/culture" />
+					</bean>
+				</entry>
+				<entry key="contents">
+					<bean class="com.sun.app.process.front.culture.CultureContentProcess">
+						<property name="successView" value="front/culture" />
+					</bean>
+				</entry>
+				<entry key="list">
+					<bean class="com.sun.app.process.front.culture.CultureListProcess">
+						<property name="successView" value="front/culture_list" />
+					</bean>
+				</entry>
+				<entry key="detail">
+					<bean class="com.sun.app.process.front.culture.CultureDetailProcess">
+						<property name="successView" value="front/culture_detail" />
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>
